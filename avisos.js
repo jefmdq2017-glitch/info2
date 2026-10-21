@@ -1,16 +1,18 @@
+// ==========================================
 // AUTO-CREA CONTENEDORES SI NO EXISTEN - NO EDITAR HTML
+// ==========================================
 function asegurarContenedor(id){
   let c = document.getElementById(id);
   if(c) return c;
   c = document.createElement('div');
   c.id = id;
   c.style.cssText='max-width:760px;margin:0 auto 20px auto;padding:0 20px;';
-  // intenta insertar despues de features-wrapper o al final
   const ref = document.getElementById('features-wrapper');
   if(ref && ref.parentNode) ref.parentNode.insertBefore(c, ref.nextSibling);
   else document.body.appendChild(c);
   return c;
 }
+
 function asegurarContenedorPadreAvisos(){
   let p = document.getElementById('contenedor-avisos') || document.getElementById('contenedor-aviso-farmacia') || document.getElementById('contenedor-todos-los-avisos');
   if(p) return p;
@@ -75,18 +77,18 @@ function crearFooterSinIG(id, nombre){
   return cont;
 }
 
+// ==========================================
+// 1. CARGA DE FARMACIA VARA
+// ==========================================
 async function cargarAvisoFarmacia() {
   try {
-    // ----------------------------------------------------
-    // 1. CARGA DE FARMACIA VARA
-    // ----------------------------------------------------
     const resFarmacia = await fetch('./farmacia-vara.json?v=' + Date.now());
-    if (resFarmacia.ok) {
-      const farmacia = await resFarmacia.json();
-      const contenedorFarmacia = asegurarContenedorPadreAvisos();
+    if (!resFarmacia.ok) return;
+    const farmacia = await resFarmacia.json();
+    const contenedorFarmacia = asegurarContenedorPadreAvisos();
 
-      if (contenedorFarmacia && farmacia) {
-        contenedorFarmacia.innerHTML = `
+    if (contenedorFarmacia && farmacia) {
+      contenedorFarmacia.innerHTML = `
         <div id="${farmacia.id}" style="background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px;">
           
           <div style="background:#0a0a0a; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-radius:20px; margin:10px 10px 0 10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
@@ -171,21 +173,26 @@ async function cargarAvisoFarmacia() {
 
         </div>
       `;
-        try { contenedorFarmacia.appendChild(crearFooterSinIG(farmacia.id, farmacia.nombre)); } catch(e) {}
-      }
+      try { contenedorFarmacia.appendChild(crearFooterSinIG(farmacia.id, farmacia.nombre)); } catch(e) {}
     }
+  } catch (error) {
+    console.error("Error cargando Farmacia Vara:", error);
+  }
+}
+cargarAvisoFarmacia();
+
+// ==========================================
+// 2. CARGA DE AMAPOLA'S DIETÉTICA
+// ==========================================
 async function cargarAvisoAmapolas() {
   try {
-    // ----------------------------------------------------
-    // 2. CARGA DE AMAPOLA'S DIETÉTICA
-    // ----------------------------------------------------
     const resAmapolas = await fetch('./amapolas-dietetica.json?v=' + Date.now());
-    if (resAmapolas.ok) {
-      const amapolas = await resAmapolas.json();
-      const contenedorAmapolas = asegurarContenedor('contenedor-aviso-amapolas');
+    if (!resAmapolas.ok) return;
+    const amapolas = await resAmapolas.json();
+    const contenedorAmapolas = asegurarContenedor('contenedor-aviso-amapolas');
 
-      if (contenedorAmapolas && amapolas) {
-        contenedorAmapolas.innerHTML = `
+    if (contenedorAmapolas && amapolas) {
+      contenedorAmapolas.innerHTML = `
         <div id="${amapolas.id}" class="amapola-card" onclick="abrirModalAmapola(this)" style="cursor:pointer; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:14px; margin-bottom:20px;">
           
           <div class="amapola-fachada-wrap" style="position:relative; border-radius:16px; overflow:hidden; margin-bottom:12px;">
@@ -237,21 +244,26 @@ async function cargarAvisoAmapolas() {
 
         </div>
       `;
-        try{ contenedorAmapolas.appendChild(crearFooterSinIG(amapolas.id, amapolas.nombre)); }catch(e){}
-      }
+      try{ contenedorAmapolas.appendChild(crearFooterSinIG(amapolas.id, amapolas.nombre)); }catch(e){}
     }
+  } catch (error) {
+    console.error("Error cargando Amapola's:", error);
+  }
+}
+cargarAvisoAmapolas();
+
+// ==========================================
+// 3. CARGA DE FONOAUDIOLOGÍA (JULIA ELENA MOSCOLONI)
+// ==========================================
 async function cargarAvisoJulia() {
   try {
-    // ----------------------------------------------------
-    // 3. CARGA DE FONOAUDIOLOGÍA (JULIA ELENA MOSCOLONI)
-    // ----------------------------------------------------
     const resJulia = await fetch('./julia-moscoloni.json?v=' + Date.now());
-    if (resJulia.ok) {
-      const julia = await resJulia.json();
-      const contenedorJulia = document.getElementById('contenedor-aviso-fonoaudiologia');
+    if (!resJulia.ok) return;
+    const julia = await resJulia.json();
+    const contenedorJulia = document.getElementById('contenedor-aviso-fonoaudiologia') || asegurarContenedor('contenedor-aviso-fonoaudiologia');
 
-      if (contenedorJulia && julia) {
-        contenedorJulia.innerHTML = `
+    if (contenedorJulia && julia) {
+      contenedorJulia.innerHTML = `
         <div id="${julia.id}" class="card-emp destacado" data-barrio="alfar" data-cat="salud" onclick="abrirModalJulia(this)" style="cursor:pointer; display:block; padding:0; overflow:hidden; border:2px solid #fde68a; background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%); border-radius:24px; position:relative; box-shadow:0 12px 32px rgba(15,23,42,0.12); max-width:760px; margin:0 auto 14px auto;">
           
           <!-- HEADER OSCURO TEAL -->
@@ -342,15 +354,15 @@ async function cargarAvisoJulia() {
         try { contenedorJulia.appendChild(crearFooterSinIG(julia.id, julia.nombre)); } catch(e) {}
       }
     }
-
   } catch (error) {
-    console.error("Error cargando los avisos individuales:", error);
+    console.error("Error cargando Fonoaudiología:", error);
   }
 }
+cargarAvisoJulia();
 
-cargarAvisosJSON();
-
-// 4. CARGA PROVEEDURÍA KEVIN (ARCHIVO INDIVIDUAL)
+// ==========================================
+// 4. CARGA PROVEEDURÍA KEVIN
+// ==========================================
 async function cargarAvisoKevin() {
   try {
     const response = await fetch('./aviso-kevin.json?v=' + Date.now());
@@ -412,11 +424,10 @@ async function cargarAvisoKevin() {
     console.error("Error cargando aviso de Kevin:", error);
   }
 }
-
 cargarAvisoKevin();
 
 // ==========================================
-// 5. CARGA KIOSCO LOS MELLI (DISEÑO PREMIUM MODERNIZADO)
+// 5. CARGA KIOSCO LOS MELLI
 // ==========================================
 async function cargarAvisoLosMelli() {
   try {
@@ -493,7 +504,6 @@ async function cargarAvisoLosMelli() {
     console.error("Error cargando aviso de Los Melli:", error);
   }
 }
-
 cargarAvisoLosMelli();
 
 // ==========================================
@@ -580,5 +590,4 @@ async function cargarAvisoLavanderia() {
     console.error("Error cargando aviso de Lavandería de Nannin:", error);
   }
 }
-
 cargarAvisoLavanderia();
