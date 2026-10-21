@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO e Indexación Básica de Google -->
+<title>Ofertas de Negocios - Farmacia, Almacén, Comercios | INFO MDQ SUR HOY</title>
+<meta name="description" content="Ofertas de negocios en Mar del Plata Sur: Farmacia Vara, Proveeduría Kevin, Amapola y comercios de Faro, Alfar, Serena y Acantilados. Promos con Cuenta DNI." />
+<link rel="canonical" href="https://infomdqhoy.pages.dev/ofertas.html" />
+<meta name="robots" content="index, follow" />
+<meta name="google-site-verification" content="7e64033b70480c67" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0f172a">
+
+<!-- 1. Código de Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3L9SZ6YVFT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3L9SZ6YVFT');
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:#f8fafc;color:#0b132b;padding-bottom:90px}
+.hero{position:relative;height:200px;overflow:hidden;background:linear-gradient(135deg,#f59e0b,#ec4899);border-radius:0 0 24px 24px;box-shadow:0 8px 30px rgba(15,23,42,0.12)}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,23,42,.85) 0%,rgba(0,0,0,.1) 60%)}
+.hero-text{position:absolute;bottom:22px;left:20px;right:20px;color:white;z-index:2}
+.hero-text h1{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.1}
+.hero-text p{font-size:13px;opacity:.9;margin-top:5px;color:#cbd5e1}
+.contenedor{max-width:1000px;margin:0 auto;padding:14px}
+.buscador-wrap{position:sticky;top:0;z-index:20;background:#f8fafc;padding:12px 0 10px 0;margin:0 0 4px 0}
+.buscador{width:100%;padding:14px 16px 14px 46px;border-radius:999px;border:2px solid #0f172a;background:white;font-weight:700;font-size:14px;outline:none;box-shadow:0 4px 14px rgba(15,23,42,0.04);transition:border-color 0.2s}
+.buscador:focus{border-color:#a21caf}
+.buscador-wrap::before{content:"🔍";position:absolute;left:18px;top:50%;transform:translateY(-50%);z-index:2;font-size:16px;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+@media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:600px) and (max-width:899px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+.card-oferta{background:white;border-radius:18px;overflow:hidden;box-shadow:0 4px 18px rgba(162,28,175,0.04);border:2px solid #edf2f7;text-align:left;transition:transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;cursor:pointer;position:relative}
+.card-oferta:hover{transform:translateY(-2px);border-color:#a21caf;box-shadow:0 6px 20px rgba(162,28,175,0.08)}
+.card-oferta:active{transform:scale(0.98);box-shadow:0 2px 10px rgba(162,28,175,0.02)}
+.badge-oferta{position:absolute;top:8px;left:8px;z-index:2;padding:4px 10px;border-radius:999px;font-size:9px;font-weight:900;color:white;background:#a21caf;letter-spacing:0.3px}
+.img-box{width:100%;height:124px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid #f1f5f9}
+.img-box img{width:100%;height:100%;object-fit:contain;display:block}
+
+.card-oferta-texto{background:#fff;border:2px solid #edf2f7;border-radius:18px;padding:14px;position:relative;cursor:pointer;min-height:175px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;box-shadow:0 4px 20px rgba(162,28,175,0.03);transition:all 0.2s ease}
+.card-oferta-texto:hover{border-color:#a21caf;box-shadow:0 6px 22px rgba(162,28,175,0.08)}
+.card-oferta-texto:active{transform:scale(0.98)}
+.info{padding:4px 2px;display:flex;flex-direction:column;gap:4px}
+.btn-ver{background:linear-gradient(135deg,#a21caf,#ec4899);color:white;padding:8px 12px;border-radius:999px;text-align:center;font-weight:900;font-size:11px;margin-top:8px;transition:opacity 0.15s}
+.btn-ver:active{opacity:0.9}
+
+.filtros-global{display:flex;gap:10px;padding:10px 4px 16px 4px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;margin-bottom:4px}
+.filtros-global::-webkit-scrollbar{display:none}
+.filtro{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:999px;border:1.5px solid #e2e8f0;background:white;font-weight:800;font-size:12px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.02);transition:all 0.2s ease}
+.filtro.activo{background:#0f172a;color:white;border-color:#0f172a;box-shadow:0 4px 12px rgba(15,23,42,0.15)}
+.filtro:active{transform:scale(0.96)}
+.filtro .ico{font-size:16px}
+
+#modalAviso{position:fixed;inset:0;background:rgba(15,23,42,0.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;backdrop-filter:blur(4px)}
+#modalAviso.activo{display:flex}
+.modal-box{background:white;border-radius:24px;max-width:480px;width:100%;overflow:hidden;max-height:92vh;overflow-y:auto;box-shadow:0 20px 40px rgba(15,23,42,0.22)}
+.modal-img{width:100%;height:auto;max-height:380px;object-fit:contain;background:#fff;display:block}
+
+.amapola-card{width:100%;max-width:560px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 40%,#a5d6a7 100%);border-radius:20px;box-shadow:0 8px 24px rgba(46,125,50,0.15);border:1.5px solid #81C784;overflow:hidden;padding:16px;margin:0 auto}
+.amapola-fachada-wrap{position:relative}
+.amapola-fachada{width:100%;height:210px;object-fit:cover;background:white;border-radius:14px;margin-bottom:12px;display:block}
+.amapola-logo-circle{position:absolute;top:8px;right:8px;background:white;border-radius:50%;width:84px;height:84px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.18);border:3px solid white;overflow:hidden}
+.amapola-logo-circle img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.35)}
+.amapola-badge-top{position:absolute;bottom:22px;left:10px;background:rgba(27,94,32,.90);color:white;font-size:10px;font-weight:900;padding:6px 12px;border-radius:999px}
+.amapola-title{font-weight:900;font-size:22px;color:#1B5E20;text-align:center;margin-bottom:2px}
+.amapola-subtitle{text-align:center;font-size:13px;font-weight:700;color:#33691E;margin-bottom:12px}
+.amapola-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:14px}
+.amapola-pill{font-size:11px;font-weight:800;padding:6px 11px;border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.pill-vegano{background:#4CAF50;color:white}.pill-celiaco{background:#FFF8E1;color:#5D4037;border:1px solid #FFECB3}.pill-diabetico{background:#FFF3E0;color:#4E342E;border:1px solid #FFE0B2}.pill-hiper{background:#E3F2FD;color:#1A237E;border:1px solid #BBDEFB}.pill-extra{background:white;color:#2E7D32;border:1px solid #C8E6C9}
+.amapola-ubicacion{background:white;border-radius:12px;border:1.5px solid #A5D6A7;padding:9px 12px;margin-bottom:14px;text-align:center}
+.amapola-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:999px;font-weight:900;font-size:14px;text-decoration:none;margin-bottom:8px}
+.btn-wsp{background:#25D366;color:white}.btn-maps{background:#E8F0FE;color:#1A73E8}.btn-ig{background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);color:white}
+.amapola-footer{text-align:center;font-size:12px;color:#2E7D32;font-weight:800;margin-top:12px;background:white;border-radius:999px;padding:6px 10px;border:1px solid #C8E6C9}
+
+/* === ENCAPSULAMIENTO ESTRICTO PARA LA NAVEGACIÓN INFERIOR MOBILE === */
+.bottom-nav {
+  position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+  height: 62px !important; background: #0b132b !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  display: flex !important; justify-content: space-around !important; align-items: center !important;
+  z-index: 99999 !important; padding-bottom: env(safe-area-inset-bottom) !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+}
+.nav-item {
+  display: flex !important; flex-direction: column !important; align-items: center !important;
+  justify-content: center !important; color: #94a3b8 !important; text-decoration: none !important;
+  font-size: 11px !important; font-weight: 500 !important; width: 25% !important; height: 100% !important; gap: 4px !important;
+}
+.nav-item svg {
+  width: 21px !important; height: 21px !important; opacity: 0.7 !important; display: block !important; margin: 0 auto !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+}
+.nav-item:hover, .nav-item.active { color: #38bdf8 !important; }
+.nav-item:hover svg, .nav-item.active svg { opacity: 1 !important; transform: translateY(-1px) !important; }
+@media (min-width: 769px) { .bottom-nav { display: none !important; } }
+</style>
+</head>
+<body>
+<div class="hero"><div class="hero-overlay"></div><div class="hero-text"><h1>🔥 OFERTAS DE NEGOCIOS</h1><p>Descuentos, reintegros y promos de la zona sur</p></div></div>
+<div class="contenedor">
+<div class="buscador-wrap"><input id="buscadorUnificado" class="buscador" placeholder="Buscar: farmacia vara, amapola, cuenta dni..."></div>
+<div class="filtros-global">
+<div class="filtro activo" data-filtro="todos"><span class="ico">🔥</span><span class="label">TODOS</span></div>
+<div class="filtro" data-filtro="promociones"><span class="ico">🏷️</span><span class="label">PROMOCIONES</span></div>
+<div class="filtro" data-filtro="reintegro"><span class="ico">💳</span><span class="label">REINTEGRO</span></div>
+<div class="filtro" data-filtro="ofertas"><span class="ico">🎁</span><span class="label">OFERTAS</span></div>
+</div>
+<div class="grid" id="gridOfertas"></div>
+</div>
+<div id="modalAviso" onclick="if(event.target.id==='modalAviso') cerrarModal()">
+<div class="modal-box">
+<img id="modalImg" class="modal-img" src="" style="display:none">
+<div style="padding:18px">
+<div id="modalBarrio" style="font-size:10px;font-weight:900;color:#a21caf;letter-spacing:.4px"></div>
+<h2 id="modalTitulo" style="font-size:17px;font-weight:900;margin:6px 0 8px 0;line-height:1.2"></h2>
+<div id="modalDesc" style="font-size:13px;color:#334155;line-height:1.5"></div>
+<button id="modalPrincipal" onclick="cargarFarmaciaDesdePrincipal()" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;background:linear-gradient(135deg,#a21caf,#ec4899);color:white;padding:13px 18px;border-radius:999px;font-weight:900;font-size:14px;width:100%;border:none;cursor:pointer">Ver aviso →</button>
+<div id="farmaciaDesdePrincipal" style="display:none;margin-top:18px;border-top:2px solid #e2e8f0;padding-top:16px"></div>
+<a id="linkIrPrincipal" href="#" style="display:none;text-align:center;margin-top:12px;font-size:12px;font-weight:800;color:#64748b;text-decoration:underline">Ir a la página del comercio →</a>
+<div style="text-align:center;margin-top:14px"><button onclick="cerrarModal()" style="background:#f1f5f9;border:2px solid #e2e8f0;padding:8px 18px;border-radius:999px;font-weight:800;font-size:11px;cursor:pointer">✕ Cerrar</button></div>
+</div>
+</div>
+</div>
+
+<script>
+const OFERTAS = [
+  {id:'farmacia-vara-cuenta-dni',nombre:'20% de ahorro en comercios de barrio',negocio:'FARMACIA VARA',tipo:'reintegro',barrio:'FARO - ALFAR • REINTEGRO • FARMACIA VARA',desc:'Farmacia Vara adherida a Cuenta DNI. 20% de ahorro en comercios de barrio. Tope $6.000 por semana y por persona.<br><br>Consultá condiciones en bancoprovincia.com.ar',vigencia:'Tope: $6.000 por semana y por persona',foto_web:'ofertas-comercio/descuentodni.webp',link_principal:'index.html#farmacia-vara', comercio:'vara'},
+  {id:'amapola-cuenta-dni',nombre:'20% de ahorro en comercios de barrio - AMAPOLA',negocio:'AMAPOLA',tipo:'reintegro',barrio:'ALFAR • REINTEGRO • AMAPOLA • CUENTA DNI',desc:'<b>20% de ahorro</b> en comercios de barrio<br><br><b>Tope: $6.000 por semana y por persona.</b><br><br>Se excluyen comercios de las promos de gastronomía, pet shop y veterinarias. Acumulable con otras promociones vigentes de Cuenta DNI.<br><br>Para más información consultá en <b>://bancoprovincia.com.ar/cuentadnicomercios</b><br><br><b>Importante:</b> Cualquier duda consulten con Banco Provincia.<br><br><small>Promoción válida desde la fecha de publicación en la web hasta agotar stock. Provincia de Buenos Aires. Cartera de consumo.</small>',vigencia:'Tope: $6.000 por semana y por persona',foto_web:null,promo_texto:'20% de ahorro',promo_precio:'Tope $6.000',promo_producto:'en comercios de barrio',link_principal:'comercios.html#amapola', comercio:'amapola'},
+  {id:'farmacia-vara-excellence',nombre:'Tintura Capilar 25% OFF $19.500',negocio:'FARMACIA VARA',tipo:'ofertas',barrio:'FARO - ALFAR • OFERTA • FARMACIA VARA',desc:'EXCELLENCE Tintura Capilar<br>Variedad de tonos<br><br><b>25% OFF</b><br>Precio final: <b>$19.500</b><br><br>Imagen no contractual. Oferta válida hasta 31/10/2026 o hasta agotar stock.',vigencia:'Hasta 31/10/2026 o agotar stock',foto_web:null,promo_texto:'25% OFF',promo_precio:'$19.500',promo_producto:'EXCELLENCE Tintura',link_principal:'index.html#farmacia-vara', comercio:'vara'},
+  {id:'farmacia-vara-nivea-solar',nombre:'Protector Solar 30% OFF $20.950',negocio:'FARMACIA VARA',tipo:'ofertas',barrio:'FARO - ALFAR • OFERTA • FARMACIA VARA',desc:'NIVEA Protector Solar<br>Protect & Hydrate FPS50 200ml<br><br><b>30% OFF</b><br>Precio final: <b>$20.950</b><br>Precio anterior: $29.928,57<br><br>Imagen no contractual. Oferta válida hasta 31/10/2026 o hasta agotar stock.',vigencia:'Hasta 31/10/2026 o agotar stock',foto_web:null,promo_texto:'30% OFF',promo_precio:'$20.950',promo_producto:'NIVEA Protector Solar',link_principal:'index.html#farmacia-vara', comercio:'vara'},
+  {id:'farmacia-vara-closeup',nombre:'Pasta Dental 25% OFF $2.500',negocio:'FARMACIA VARA',tipo:'ofertas',barrio:'FARO - ALFAR • OFERTA • FARMACIA VARA',desc:'CLOSE-UP Pasta Dental<br>Triple Protección Menta x70g<br>Triple Protección Menta Americana x70g<br><br><b>25% OFF</b><br>Precio final: <b>$2.500</b><br><br>Imagen no contractual. Oferta válida hasta 31/10/2026 o hasta agotar stock.',vigencia:'Hasta 31/10/2026 o agotar stock',foto_web:null,promo_texto:'25% OFF',promo_precio:'$2.500',promo_producto:'CLOSE-UP x70g',link_principal:'index.html#farmacia-vara', comercio:'vara'},
+  {id:'farmacia-vara-doncella',nombre:'Protectores Diarios 30% OFF $1.000',negocio:'FARMACIA VARA',tipo:'ofertas',barrio:'FARO - ALFAR • OFERTA • FARMACIA VARA',desc:'DONCELLA Protectores Diarios<br>Respirables S/Desodorante x20u<br>Respirables C/Desodorante x20u<br><br><b>30% OFF</b><br>Precio final: <b>$1.000</b><br><br>Imagen no contractual. Oferta válida hasta 31/10/2026 o hasta agotar stock.',vigencia:'Hasta 31/10/2026 o agotar stock',foto_web:null,promo_texto:'30% OFF',promo_precio:'$1.000',promo_producto:'DONCELLA x20u',link_principal:'index.html#farmacia-vara', comercio:'vara'}
+];
+function crearCard(o){
+  const isAmapola = o.negocio.includes('AMAPOLA');
+  const colorMain = isAmapola ? '#be185d' : '#a21caf';
+  const colorDark = '#831843';
+  const colorLight = isAmapola ? '#fce7f3' : '#fdf4ff';
+  const grad = isAmapola ? 'linear-gradient(135deg,#be185d,#ec4899)' : 'linear-gradient(135deg,#a21caf,#ec4899)';
+  const icon = isAmapola ? '🌸' : '💊';
+  
+  if(o.foto_web){
+    return `<div class="card-oferta" data-tipo="${o.tipo}" onclick="abrirModal('${o.id}')" style="border:2.5px solid ${colorMain};">
+      <div class="badge-oferta badge-reintegro" style="background:${grad};">${icon} ${o.negocio}</div>
+      <div class="img-box"><img src="${o.foto_web}" loading="lazy" alt="${o.negocio}"></div>
+      <div class="info" style="background:linear-gradient(180deg,${colorLight} 0%,#ffffff 100%);">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:${colorMain};color:white;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:900;">${icon} ${o.negocio}</div>
+        <h3 style="font-size:13px;margin-top:6px;">${o.nombre}</h3>
+        <div class="vigencia" style="color:${colorMain};">${o.vigencia}</div>
+        <div class="btn-ver" style="background:${grad};">Ver reintegro →</div>
+      </div>
+    </div>`;
+  } else {
+    return `<div class="card-oferta-texto" data-tipo="${o.tipo}" onclick="abrirModal('${o.id}')" style="background:${colorLight};border:2.5px solid ${colorMain};">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <div style="width:36px;height:36px;background:${grad};border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">${icon}</div>
+          <div>
+            <div style="font-size:14px;font-weight:900;color:${colorDark};">${o.negocio}</div>
+            <div style="font-size:9px;font-weight:800;color:#c026d3;text-transform:uppercase;">${isAmapola ? 'Cuenta DNI' : 'Alfar • Faro'}</div>
+          </div>
+        </div>
+        <div style="font-size:12px;font-weight:900;color:#334155;">${o.promo_producto}</div>
+        <div style="font-size:26px;margin:8px 0;color:#be185d;font-weight:900;">${o.promo_texto}</div>
+        <div style="font-size:18px;color:${colorDark};font-weight:900;">${o.promo_precio}</div>
+      </div>
+      <div>
+        <div style="font-size:11.5px;font-weight:800;color:#0f172a;margin-top:10px;">${o.nombre}</div>
+        <div class="btn-ver" style="margin-top:10px;background:${grad};">Ver oferta completa →</div>
+      </div>
+    </div>`;
+  }
+}
+
+function renderGrid(lista){document.getElementById('gridOfertas').innerHTML=lista.map(crearCard).join('');}
+renderGrid(OFERTAS);
+
+document.querySelectorAll('.filtro').forEach(f=>{
+  f.addEventListener('click',()=>{
+    document.querySelectorAll('.filtro').forEach(x=>x.classList.remove('activo'));
+    f.classList.add('activo');
+    const tipo=f.dataset.filtro;
+    if(tipo==='todos') renderGrid(OFERTAS);
+    else renderGrid(OFERTAS.filter(o=>o.tipo===tipo));
+  });
+});
+let ofertaActual = null;
+
+function abrirModal(id){
+  const o=OFERTAS.find(x=>x.id===id); if(!o) return;
+  ofertaActual = o;
+  const img=document.getElementById('modalImg');
+  if(o.foto_web){ img.src=o.foto_web; img.style.display='block'; } else { img.style.display='none'; }
+  document.getElementById('modalBarrio').innerText=o.barrio;
+  document.getElementById('modalTitulo').innerText=o.nombre;
+  document.getElementById('modalDesc').innerHTML=`<b>${o.negocio}</b><br><br>${o.desc}<br><br><small>${o.vigencia}</small>`;
+  document.getElementById('farmaciaDesdePrincipal').style.display='none';
+  document.getElementById('farmaciaDesdePrincipal').innerHTML='';
+  document.getElementById('linkIrPrincipal').style.display='none';
+  const btn=document.getElementById('modalPrincipal');
+  btn.style.display='flex';
+  if(o.comercio==='amapola'){
+    btn.innerText='Ver aviso de AMAPOLA →';
+    btn.style.background='linear-gradient(135deg,#be185d,#ec4899)';
+  } else {
+    btn.innerText='Ver aviso de FARMACIA VARA →';
+    btn.style.background='linear-gradient(135deg,#a21caf,#ec4899)';
+  }
+  btn.disabled=false;
+  document.getElementById('modalAviso').classList.add('activo');
+}
+
+async function cargarFarmaciaDesdePrincipal(){
+  const o = ofertaActual;
+  if(!o) return;
+  const btn=document.getElementById('modalPrincipal');
+  const cont=document.getElementById('farmaciaDesdePrincipal');
+  const linkIr=document.getElementById('linkIrPrincipal');
+  btn.innerText='Cargando aviso original...';
+  btn.disabled=true;
+  try{
+    let htmlText=null;
+    const paginas = ['comercios.html','./comercios.html','index.html','./index.html'];
+    
+    for(const r of paginas){
+      try{
+        const res=await fetch(r+'?v='+Date.now());
+        if(res.ok){ 
+          const t=await res.text();
+          htmlText=t;
+          if(t.toLowerCase().includes('card-'+o.comercio)) break;
+        }
+      }catch(e){}
+    }
+    if(!htmlText) throw new Error('no se pudo fetch');
+    const parser=new DOMParser();
+    const doc=parser.parseFromString(htmlText,'text/html');
+    
+    let originalCard=null;
+    if(o.comercio==='amapola'){
+      originalCard = doc.getElementById('card-amapola');
+    } else {
+      originalCard = doc.getElementById('card-vara') || doc.querySelector('#card-vara') || doc.getElementById('modal-farmacia');
+    }
+    
+    if(!originalCard) throw new Error('aviso '+o.comercio+' no encontrado');
+    
+    let clonHTML = originalCard.outerHTML;
+    clonHTML = clonHTML.replace(/onclick="abrirModalComercio[^"]*"/g, '').replace(/cursor:\s*pointer;?/g, '');
+    
+    cont.innerHTML='<div style="background:white;border-radius:16px;overflow:hidden;">'+clonHTML+'</div>';
+    cont.style.display='block';
+    btn.style.display='none';
+    linkIr.style.display='block';
+    linkIr.href= o.comercio==='amapola' ? 'comercios.html#amapola' : 'comercios.html#vara';
+    linkIr.innerText = o.comercio==='amapola' ? 'Ir a comercios → AMAPOLA' : 'Ir a comercios → FARMACIA VARA';
+    cont.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(err){
+    console.error(err);
+    cont.innerHTML='<div style="padding:14px;background:#fef2f2;border-radius:12px;color:#991b1b;font-size:13px;">Error: '+err.message+'<br><br><a href="'+(o.comercio==='amapola' ? 'comercios.html' : 'comercios.html#vara')+'" style="color:#a21caf;font-weight:900">→ Ir directo</a></div>';
+    cont.style.display='block';
+    btn.style.display='none';
+    linkIr.style.display='block';
+  }
+}
+
+function cerrarModal(){document.getElementById('modalAviso').classList.remove('activo');}
+</script>
+
+<!-- NAV INFERIOR PREMIUM FIJA Y ACUMULADA -->
+<div class="bottom-nav">
+  <a href="index.html" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    <span>Inicio</span>
+  </a>
+  <a href="vidriera-de-emprendedores.html" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-3V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2M9 4h6v3H9V4zm11 15H4V9h16v10z"></path></svg>
+    <span>Emprendedores</span>
+  </a>
+  <a href="profesionales.html" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    <span>Profesionales</span>
+  </a>
+  <a href="#" class="nav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+    <span>Ofertas</span>
+  </a>
+</div>
+</body>
+</html>
