@@ -27,13 +27,13 @@ function asegurarContenedorPadreAvisos(){
 
 // FOOTER DALE AMOR SIN INSTAGRAM - DEFINITIVO
 function compartirFacebookReal(id){
-  const url = encodeURIComponent(location.href.split('#')[0]+'#'+id);
-  window.open('https://www.facebook.com/sharer/sharer.php?u='+url,'_blank','width=600,height=400');
+  const url = encodeURIComponent(location.origin + '/a/' + id);
+  window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, '_blank', 'width=600,height=400');
 }
 function compartirWhatsAppReal(id, nombre){
-  const link = location.href.split('#')[0]+'#'+id;
-  const texto = encodeURIComponent('Mirá '+nombre+' en INFO MDQ HOY: '+link);
-  window.open('https://wa.me/?text='+texto,'_blank');
+  const url = location.origin + '/a/' + id;
+  const texto = encodeURIComponent('Mirá ' + nombre + ' en INFO MDQ HOY:\n' + url);
+  window.open('https://wa.me/?text=' + texto, '_blank');
 }
 function darAmorReal(id, btn){
   if(localStorage.getItem('liked_'+id)){
@@ -353,6 +353,7 @@ async function cargarAvisoJulia() {
       `;
         try { contenedorJulia.appendChild(crearFooterSinIG(julia.id, julia.nombre)); } catch(e) {}
       }
+    }
   } catch (error) {
     console.error("Error cargando Fonoaudiología:", error);
   }
@@ -590,3 +591,14 @@ async function cargarAvisoLavanderia() {
   }
 }
 cargarAvisoLavanderia();
+document.addEventListener('DOMContentLoaded', () => {
+  const avisoId = new URLSearchParams(window.location.search).get('aviso');
+  if (avisoId) {
+    setTimeout(() => {
+      const el = document.getElementById(avisoId) || document.getElementById('aviso-' + avisoId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 800);
+  }
+});
