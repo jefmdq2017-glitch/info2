@@ -353,7 +353,6 @@ async function cargarAvisoJulia() {
       `;
         try { contenedorJulia.appendChild(crearFooterSinIG(julia.id, julia.nombre)); } catch(e) {}
       }
-    }
   } catch (error) {
     console.error("Error cargando Fonoaudiología:", error);
   }
