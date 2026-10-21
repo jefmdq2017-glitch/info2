@@ -19,7 +19,7 @@ export async function onRequest({ params, request, env }) {
     // Mapeo de tus campos reales del JSON
     const titulo = a.nombre || a.titulo || 'Comercio en INFO MDQ SUR HOY';
     const descripcion = a.slogan || a.subtitulo || a.mp || 'Mirá esta publicación en nuestro portal local.';
-    const foto = a.imagen_frente || a.imagen || 'banner1.jpg';
+    const foto = a.imagen_fachada || a.imagen_frente || a.imagen || a.foto || a.logo_circle || a.logo;
     
     const img = foto.startsWith('http') ? foto : `${u.origin}/${foto.replace(/^\//, '')}`;
     const destino = `${u.origin}/?aviso=${encodeURIComponent(id)}`;
