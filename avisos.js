@@ -90,7 +90,7 @@ async function cargarAvisosJSON() {
 
     if (contenedorFarmacia && farmacia) {
       contenedorFarmacia.innerHTML = `
-        <div style="background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px;">
+        <div id="${farmacia.id}" style="background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px;">
           
           <div style="background:#0a0a0a; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-radius:20px; margin:10px 10px 0 10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
             <div style="color:#ffffff; font-size:22px; font-weight:900; letter-spacing:1px; text-transform:uppercase;">
@@ -185,7 +185,7 @@ async function cargarAvisosJSON() {
 
     if (contenedorAmapolas && amapolas) {
       contenedorAmapolas.innerHTML = `
-        <div class="amapola-card" onclick="abrirModalAmapola(this)" style="cursor:pointer; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:14px; margin-bottom:20px;">
+        <div id="${amapolas.id}" class="amapola-card" onclick="abrirModalAmapola(this)" style="cursor:pointer; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:14px; margin-bottom:20px;">
           
           <div class="amapola-fachada-wrap" style="position:relative; border-radius:16px; overflow:hidden; margin-bottom:12px;">
             <img src="${amapolas.imagen_fachada}" alt="${amapolas.nombre}" class="amapola-fachada" style="width:100%; height:auto; display:block;">
@@ -248,7 +248,7 @@ async function cargarAvisosJSON() {
 
     if (contenedorJulia && julia) {
       contenedorJulia.innerHTML = `
-        <div class="card-emp destacado" data-barrio="alfar" data-cat="salud" onclick="abrirModalJulia(this)" style="cursor:pointer; display:block; padding:0; overflow:hidden; border:2px solid #fde68a; background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%); border-radius:24px; position:relative; box-shadow:0 12px 32px rgba(15,23,42,0.12); max-width:760px; margin:0 auto 14px auto;">
+        <div id="${julia.id}" class="card-emp destacado" data-barrio="alfar" data-cat="salud" onclick="abrirModalJulia(this)" style="cursor:pointer; display:block; padding:0; overflow:hidden; border:2px solid #fde68a; background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%); border-radius:24px; position:relative; box-shadow:0 12px 32px rgba(15,23,42,0.12); max-width:760px; margin:0 auto 14px auto;">
           
           <!-- HEADER OSCURO TEAL -->
           <div style="background:linear-gradient(135deg,#0f766e 0%,#115e59 100%); padding:16px 16px 14px; position:relative; overflow:hidden;">
@@ -356,7 +356,7 @@ async function cargarAvisoKevin() {
 
     if (contenedorKevin && kevin) {
       contenedorKevin.innerHTML = `
-        <div style="grid-column:1/-1;max-width:760px;margin:0 auto 14px auto;">
+        <div id="${kevin.id}" style="grid-column:1/-1;max-width:760px;margin:0 auto 14px auto;">
           <div style="cursor:pointer;box-sizing:border-box;width:100%;max-width:760px;margin:0 auto;padding:12px;background:#fafafa;border:1px solid #e5e7eb;border-radius:28px;font-family:Inter,Arial,sans-serif;color:#0b132b;box-shadow:0 14px 35px rgba(11,19,43,.12);">
             
             <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px;background:linear-gradient(135deg,#7e22ce,#581c87);border-radius:18px;">
@@ -440,7 +440,7 @@ async function cargarAvisoLosMelli() {
       }
 
       contenedor.innerHTML = `
-        <div id="card-melli" data-search="${melli.search_tags}" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 16px 45px rgba(15,23,42,0.12);border:1.5px solid #e2e8f0;font-family:'Inter',system-ui,sans-serif;position:relative;">
+        <div id="${melli.id}" data-search="${melli.search_tags}" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 16px 45px rgba(15,23,42,0.12);border:1.5px solid #e2e8f0;font-family:'Inter',system-ui,sans-serif;position:relative;">
           
           <div style="background:linear-gradient(135deg,#090d16 0%, #1e293b 100%);padding:20px 22px;position:relative;overflow:hidden;">
             <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%);pointer-events:none;"></div>
