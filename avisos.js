@@ -498,8 +498,10 @@ async function cargarAvisoLosMelli() {
           </div>
         </div>
       `;
-try { contenedor.appendChild(crearFooterSinIG(melli.id, melli.nombre)); } catch(e) {}
-}      
+      try { 
+        contenedor.appendChild(crearFooterSinIG(melli.id, melli.nombre)); 
+      } catch(e) {}
+    } 
   } catch (error) {
     console.error("Error cargando aviso de Los Melli:", error);
   }
