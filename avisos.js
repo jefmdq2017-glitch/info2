@@ -1,0 +1,579 @@
+// AUTO-CREA CONTENEDORES SI NO EXISTEN - NO EDITAR HTML
+function asegurarContenedor(id){
+  let c = document.getElementById(id);
+  if(c) return c;
+  c = document.createElement('div');
+  c.id = id;
+  c.style.cssText='max-width:760px;margin:0 auto 20px auto;padding:0 20px;';
+  // intenta insertar despues de features-wrapper o al final
+  const ref = document.getElementById('features-wrapper');
+  if(ref && ref.parentNode) ref.parentNode.insertBefore(c, ref.nextSibling);
+  else document.body.appendChild(c);
+  return c;
+}
+function asegurarContenedorPadreAvisos(){
+  let p = document.getElementById('contenedor-avisos') || document.getElementById('contenedor-aviso-farmacia') || document.getElementById('contenedor-todos-los-avisos');
+  if(p) return p;
+  p = document.createElement('div');
+  p.id='contenedor-todos-los-avisos';
+  p.style.cssText='max-width:760px;margin:0 auto;padding:0 20px;';
+  const ref = document.getElementById('features-wrapper');
+  if(ref && ref.parentNode) ref.parentNode.insertBefore(p, ref.nextSibling);
+  else document.body.appendChild(p);
+  return p;
+}
+
+// FOOTER DALE AMOR SIN INSTAGRAM - DEFINITIVO
+function compartirFacebookReal(id){
+  const url = encodeURIComponent(location.href.split('#')[0]+'#'+id);
+  window.open('https://www.facebook.com/sharer/sharer.php?u='+url,'_blank','width=600,height=400');
+}
+function compartirWhatsAppReal(id, nombre){
+  const link = location.href.split('#')[0]+'#'+id;
+  const texto = encodeURIComponent('Mirá '+nombre+' en INFO MDQ HOY: '+link);
+  window.open('https://wa.me/?text='+texto,'_blank');
+}
+function darAmorReal(id, btn){
+  if(localStorage.getItem('liked_'+id)){
+    btn.style.transform='scale(1.2)';
+    setTimeout(()=>btn.style.transform='scale(1)',200);
+    return;
+  }
+  let c=(parseInt(localStorage.getItem('likes_'+id)||'0')||0)+1;
+  localStorage.setItem('likes_'+id, String(c));
+  localStorage.setItem('liked_'+id,'1');
+  const span = btn.querySelector('.corazon-num');
+  if(span) span.textContent=c;
+  btn.style.background='#fecaca';
+  btn.style.transform='scale(1.15)';
+  setTimeout(()=>btn.style.transform='scale(1)',200);
+}
+function crearFooterSinIG(id, nombre){
+  const cont = document.createElement('div');
+  cont.className='footer-amor-auto';
+  cont.style.cssText="margin:12px 0 22px 0;background:#ffffff;border:2px solid #ffe4e6;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,0.08);overflow:hidden";
+  cont.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px 14px;gap:10px;">
+      <button onclick="event.stopPropagation(); darAmorReal('${id}', this)" data-like-id="${id}" style="display:flex;align-items:center;gap:8px;background:#fff0f0;border:2px solid #fecaca;border-radius:999px;padding:10px 18px;font-weight:900;font-size:16px;cursor:pointer;">
+        <span style="font-size:18px">❤️</span>
+        <span class="corazon-num" style="font-size:16px;color:#be123c">0</span>
+      </button>
+      <div style="flex:1;text-align:left;padding-left:6px;">
+        <div style="font-weight:900;font-size:13px;color:#0f172a;line-height:1.15;">Dale amor a tu comercio favorito y compartilo</div>
+        <div style="font-weight:600;font-size:11px;color:#64748b;margin-top:2px;">${nombre} es del barrio</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 12px 12px;background:#fff5f5;">
+      <button onclick="event.stopPropagation(); compartirFacebookReal('${id}')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#1877f2;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">f Facebook</button>
+      <button onclick="event.stopPropagation(); compartirWhatsAppReal('${id}','${nombre}')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">💬 WhatsApp</button>
+    </div>
+  `;
+  setTimeout(()=>{
+    const c=localStorage.getItem('likes_'+id);
+    if(c){ const s=cont.querySelector('.corazon-num'); if(s) s.textContent=c; }
+  },0);
+  return cont;
+}
+
+async function cargarAvisosJSON() {
+  try {
+    const response = await fetch('./avisos.json?v=' + Date.now());
+    if (!response.ok) throw new Error("No se pudo cargar avisos.json");
+    
+    const avisos = await response.json();
+
+    // ----------------------------------------------------
+    // 1. CARGA DE FARMACIA VARA
+    // ----------------------------------------------------
+    const contenedorFarmacia = asegurarContenedorPadreAvisos();
+    const farmacia = avisos.find(a => a.id === 'farmacia-vara');
+
+    if (contenedorFarmacia && farmacia) {
+      contenedorFarmacia.innerHTML = `
+        <div style="background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px;">
+          
+          <div style="background:#0a0a0a; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-radius:20px; margin:10px 10px 0 10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+            <div style="color:#ffffff; font-size:22px; font-weight:900; letter-spacing:1px; text-transform:uppercase;">
+              ${farmacia.nombre}
+            </div>
+            <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #047857 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; position: relative; border: 3px solid #ffffff; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.35);">
+              <div style="width: 32px; height: 12px; background: #ffffff; border-radius: 4px; position: absolute;"></div>
+              <div style="width: 12px; height: 32px; background: #ffffff; border-radius: 4px; position: absolute;"></div>
+              <div style="width: 12px; height: 12px; background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(16,185,129,0.4)); position: absolute; border-radius: 3px; z-index: 2;"></div>
+            </div>
+          </div>
+
+          <div style="padding:12px 14px; display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;">
+            ${farmacia.imagen_frente ? `
+              <div style="flex:1 1 200px; min-width:150px; background:white; border-radius:16px; border:1px solid #e2e8f0; overflow:hidden;">
+                <img src="${farmacia.imagen_frente}" alt="${farmacia.nombre}" style="width:100%; height:auto; display:block;">
+              </div>
+            ` : ''}
+
+            <div style="flex:1 1 220px; padding-top:2px;">
+              <div style="color:#14532d; font-weight:900; font-size:19px; line-height:1.25;">
+                ${farmacia.slogan || ''}
+              </div>
+              
+              <div style="margin-top:12px; display:flex; flex-direction:column; gap:9px; font-size:14px; font-weight:700; color:#0f172a;">
+                ${farmacia.servicios ? farmacia.servicios.map(s => `<div>${s}</div>`).join('') : ''}
+
+                ${farmacia.obras_sociales ? farmacia.obras_sociales.map(os => `
+                  <div><span style="background:${os.color}; color:white; padding:3px 6px; border-radius:5px; font-size:9px; font-weight:900">${os.nombre}</span> Atiende${os.nombre}</div>
+                `).join('') : ''}
+
+                ${farmacia.horarios_titulo ? `
+                  <div style="margin-top:4px; padding:8px 10px; background:#f1f5f9; border-radius:12px; border:1px solid #e2e8f0; font-size:12px; font-weight:700; color:#334155; line-height:1.4;">
+                    🕒 <span style="color:#14532d; font-weight:900; font-size:11px">${farmacia.horarios_titulo}</span><br>${farmacia.horarios_lineas ? farmacia.horarios_lineas.join('<br>') : ''}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div style="margin:0 14px 10px 14px; background:#86d391; border-radius:14px; padding:12px 6px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px;">
+            <a href="https://wa.me/${farmacia.whatsapp || '5492235808030'}?text=Hola%20Farmacia%20Vara%2C%20los%20vi%20en%20InfoMDQHoy" target="_blank" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; gap:5px; border-right:2px solid #5aa867; padding-right:4px; justify-content:center; min-width:0;">
+              <div style="width:30px; height:30px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 5px rgba(0,0,0,.2);">
+                <svg viewBox="0 0 32 32" width="17" height="17" fill="white"><path d="M19.11 17.2c-.31-.16-1.84-.9-2.12-1.01-.29-.11-.5-.16-.7.16-.21.31-.82 1.01-1 1.22-.19.21-.37.23-.69.08-.31-.16-1.32-.48-2.51-1.54-.93-.83-1.55-1.85-1.74-2.16-.18-.31-.02-.48.14-.64.14-.14.31-.37.47-.55.16-.18.21-.31.31-.52.1-.21.05-.39-.03-.54-.08-.16-.7-1.69-.96-2.31-.25-.6-.51-.52-.7-.53h-.6c-.21 0-.54.08-.82.39-.29.31-1.08 1.06-1.08 2.58s1.11 2.99 1.26 3.2c.16.21 2.18 3.33 5.28 4.67.74.32 1.31.51 1.76.65.74.23 1.41.2 1.94.12.59-.09 1.84-.75 2.1-1.48.26-.72.26-1.34.18-1.47-.08-.13-.29-.21-.6-.36zM16 2.04c-7.7 0-13.94 6.24-13.94 13.94 0 2.46.64 4.86 1.86 6.97L2.05 30l7.25-1.9A13.9 13.9 0 0 0 16 30.08c7.7 0 13.94-6.24 13.94-13.94S23.7 2.04 16 2.04zm0 25.33A11.35 11.35 0 0 1 10.22 26l-.42-.25-4.31 1.13 1.15-4.2-.27-.43a11.35 11.35 0 0 1-1.74-6.02c0-6.28 5.11-11.39 11.39-11.39a11.33 11.33 0 0 1 8.05 3.33 11.33 11.33 0 0 1 3.33 8.05c0 6.28-5.11 11.39-11.4 11.39z"/></svg>
+              </div>
+              <div style="color:#05210f; font-weight:900; font-size:10.5px; line-height:1.2; text-align:center;">
+                WhatsApp<br><b style="font-size:11px">${farmacia.whatsapp_texto || '2235808030'}</b>
+              </div>
+            </a>
+
+            <a href="${farmacia.maps || '#'}" target="_blank" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; gap:5px; border-right:2px solid #5aa867; padding-right:4px; justify-content:center; min-width:0;">
+              <div style="width:30px; height:30px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
+              </div>
+              <div style="color:#05210f; font-weight:900; font-size:10.5px; line-height:1.2; text-align:center;">
+                Ver en<br>el mapa
+              </div>
+            </a>
+
+            <a href="${farmacia.direccion_url || farmacia.maps || '#'}" target="_blank" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; gap:5px; justify-content:center; min-width:0;">
+              <div style="width:30px; height:30px; background:#14532d; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 21s-6-5.373-6-10a6 6 0 0 1 12 0c0 4.627-6 10-6 10z"></path><circle cx="12" cy="11" r="2"></circle></svg>
+              </div>
+              <div style="color:#05210f; font-weight:900; font-size:10.5px; line-height:1.2; text-align:center;">
+                ${farmacia.direccion || ''}
+              </div>
+            </a>
+          </div>
+
+          ${farmacia.instagram ? `
+            <a href="${farmacia.instagram}" target="_blank" style="display:block; margin:0 14px 10px 14px; padding:11px; border-radius:12px; background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); color:white; font-weight:900; text-align:center; text-decoration:none;">
+              📸 ${farmacia.instagram_user || '@farmaciavaraok'}
+            </a>
+          ` : ''}
+
+          ${farmacia.pie_texto ? `
+            <div style="text-align:center; font-size:11px; color:#64748b; font-weight:700; padding:0 14px 14px 14px;">
+              ${farmacia.pie_texto}
+            </div>
+          ` : ''}
+
+        </div>
+      `;
+      try { contenedorFarmacia.appendChild(crearFooterSinIG(farmacia.id, farmacia.nombre)); } catch(e) {}
+    }
+
+    // ----------------------------------------------------
+    // 2. CARGA DE AMAPOLA'S DIETÉTICA
+    // ----------------------------------------------------
+    const contenedorAmapolas = asegurarContenedor('contenedor-aviso-amapolas');
+    const amapolas = avisos.find(a => a.id === 'amapolas-dietetica');
+
+    if (contenedorAmapolas && amapolas) {
+      contenedorAmapolas.innerHTML = `
+        <div class="amapola-card" onclick="abrirModalAmapola(this)" style="cursor:pointer; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:14px; margin-bottom:20px;">
+          
+          <div class="amapola-fachada-wrap" style="position:relative; border-radius:16px; overflow:hidden; margin-bottom:12px;">
+            <img src="${amapolas.imagen_fachada}" alt="${amapolas.nombre}" class="amapola-fachada" style="width:100%; height:auto; display:block;">
+            ${amapolas.logo_circle ? `
+              <div class="amapola-logo-circle" style="position:absolute; bottom:10px; left:10px; width:60px; height:60px; background:white; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                <img src="${amapolas.logo_circle}" alt="Logo" style="width:90%; height:auto;">
+              </div>
+            ` : ''}
+            ${amapolas.badge_top ? `
+              <div class="amapola-badge-top" style="position:absolute; top:10px; right:10px; background:#2e7d32; color:white; font-size:10px; font-weight:900; padding:4px 8px; border-radius:12px;">
+                ${amapolas.badge_top}
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="amapola-title" style="font-size:20px; font-weight:900; color:#1e293b;">${amapolas.nombre}</div>
+          <div class="amapola-subtitle" style="font-size:13px; font-weight:700; color:#475569; margin-bottom:10px;">${amapolas.subtitulo}</div>
+
+          <div class="amapola-badges" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;">
+            ${amapolas.pills ? amapolas.pills.map(p => `
+              <span class="amapola-pill ${p.clase}" style="background:${p.color}; color:${p.texto_color}; font-size:11px; font-weight:800; padding:4px 8px; border-radius:8px; display:inline-block;">${p.texto}</span>
+            `).join('') : ''}
+          </div>
+
+          <div class="amapola-ubicacion" style="margin-bottom:12px; padding:10px; background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0;">
+            <div style="font-size:13px; color:#1E293B;">
+              <b>📍 ${amapolas.direccion_titulo}</b><br>
+              <small>${amapolas.direccion_sub1}</small><br>
+              <small style="font-size:11px; color:#2E7D32; font-weight:700;">${amapolas.direccion_sub2}</small>
+            </div>
+          </div>
+
+          ${amapolas.whatsapp_url ? `
+            <a href="${amapolas.whatsapp_url}" target="_blank" rel="noopener noreferrer" class="amapola-btn btn-wsp" style="display:block; background:#25D366; color:white; text-align:center; padding:10px; border-radius:12px; font-weight:900; font-size:13px; text-decoration:none; margin-bottom:8px;">${amapolas.whatsapp_btn_text}</a>
+          ` : ''}
+
+          ${amapolas.maps_url ? `
+            <a href="${amapolas.maps_url}" target="_blank" rel="noopener noreferrer" class="amapola-btn btn-maps" style="display:block; background:#0284c7; color:white; text-align:center; padding:10px; border-radius:12px; font-weight:900; font-size:13px; text-decoration:none; margin-bottom:8px;">📍 ${amapolas.maps_btn_text}</a>
+          ` : ''}
+
+          ${amapolas.instagram_url ? `
+            <a href="${amapolas.instagram_url}" target="_blank" rel="noopener noreferrer" class="amapola-btn btn-ig" style="display:block; background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); color:white; text-align:center; padding:10px; border-radius:12px; font-weight:900; font-size:13px; text-decoration:none; margin-bottom:10px;">${amapolas.instagram_user}</a>
+          ` : ''}
+
+          ${amapolas.pie_texto ? `
+            <div class="amapola-footer" style="text-align:center; font-size:11px; color:#64748b; font-weight:700;">${amapolas.pie_texto}</div>
+          ` : ''}
+
+        </div>
+      `;
+    }
+    try{ contenedorAmapolas.appendChild(crearFooterSinIG(amapolas.id, amapolas.nombre)); }catch(e){}
+
+
+    // ----------------------------------------------------
+    // 3. CARGA DE FONOAUDIOLOGÍA (JULIA ELENA MOSCOLONI)
+    // ----------------------------------------------------
+    const contenedorJulia = document.getElementById('contenedor-aviso-fonoaudiologia');
+    const julia = avisos.find(a => a.id === 'fonoaudiologia-julia');
+
+    if (contenedorJulia && julia) {
+      contenedorJulia.innerHTML = `
+        <div class="card-emp destacado" data-barrio="alfar" data-cat="salud" onclick="abrirModalJulia(this)" style="cursor:pointer; display:block; padding:0; overflow:hidden; border:2px solid #fde68a; background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%); border-radius:24px; position:relative; box-shadow:0 12px 32px rgba(15,23,42,0.12); max-width:760px; margin:0 auto 14px auto;">
+          
+          <!-- HEADER OSCURO TEAL -->
+          <div style="background:linear-gradient(135deg,#0f766e 0%,#115e59 100%); padding:16px 16px 14px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:-40px; right:-40px; width:120px; height:120px; background:rgba(255,255,255,0.08); border-radius:50%;"></div>
+            <div style="position:absolute; bottom:-20px; left:40%; width:80px; height:80px; background:rgba(253,230,138,0.12); border-radius:50%;"></div>
+            
+            <div style="display:flex; align-items:center; gap:12px; position:relative; z-index:1;">
+              <div style="width:76px; height:76px; min-width:76px; border-radius:50%; overflow:hidden; border:3px solid white; box-shadow:0 4px 16px rgba(0,0,0,0.2); background:white; position:relative;">
+                <img src="${julia.foto_perfil}" alt="${julia.nombre}" style="width:100%; height:100%; object-fit:cover; object-position:center top; display:block;" onerror="this.style.display='none'">
+                <div style="position:absolute; bottom:-2px; right:-2px; width:20px; height:20px; background:#22c55e; border:2px solid white; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                  <div style="width:6px; height:6px; background:white; border-radius:50%;"></div>
+                </div>
+              </div>
+
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+                  <span style="background:rgba(253,230,138,0.95); color:#78350f; padding:3px 8px; border-radius:999px; font-size:9px; font-weight:900; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:4px;">
+                    <span style="width:5px; height:5px; background:#d97706; border-radius:50%; display:inline-block;"></span> DESTACADO • SALUD
+                  </span>
+                  <span style="background:rgba(255,255,255,0.15); color:#fef3c7; padding:3px 7px; border-radius:999px; font-size:8px; font-weight:800;">${julia.mp}</span>
+                </div>
+                <div style="font-size:11px; font-weight:800; letter-spacing:1px; color:#fde68a; text-transform:uppercase; margin-bottom:2px;">${julia.nombre_titulo}</div>
+                <h3 style="margin:0; font-size:17px; font-weight:900; color:white; line-height:1.15; letter-spacing:-0.2px;">${julia.nombre}</h3>
+                <div style="font-size:10.5px; font-weight:700; color:#ccfbf1; margin-top:3px; letter-spacing:0.2px;">${julia.subtitulo_header}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BODY CON FONDO CLARO -->
+          <div style="padding:14px 16px 12px; background:linear-gradient(180deg,#fffbeb 0%,#ffffff 100%);">
+            <div style="font-size:12.5px; font-weight:600; color:#1e293b; line-height:1.45; margin-bottom:12px;">
+              ${julia.titulo_universidad}
+            </div>
+            
+            <div style="height:1px; background:linear-gradient(90deg,transparent,#fde68a,transparent); margin:10px 0;"></div>
+            
+            <div style="font-size:10px; font-weight:900; letter-spacing:1px; color:#92400e; text-transform:uppercase; margin-bottom:8px;">ESPECIALIDADES</div>
+            
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${julia.especialidades ? julia.especialidades.map(e => `
+                <div style="display:flex; align-items:center; gap:10px; background:white; border:1.5px solid #fde68a; border-left:4px solid ${e.border_color}; padding:9px 10px; border-radius:12px; box-shadow:0 2px 8px rgba(15,23,42,0.04);">
+                  <div style="width:32px; height:32px; min-width:32px; background:${e.bg_icon}; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                    ${e.svg}
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-size:13px; font-weight:800; color:#0f172a; line-height:1.1;">${e.titulo}</div>
+                    <div style="font-size:11px; font-weight:500; color:#57534e; margin-top:1px;">${e.subtitulo}</div>
+                  </div>
+                </div>
+              `).join('') : ''}
+            </div>
+
+            <!-- LUGARES DE ATENCIÓN -->
+            <div style="margin-top:14px; background:#f0fdf4; border:2.5px solid #0f766e; border-radius:16px; padding:12px; box-sizing:border-box; overflow:hidden;">
+              <div style="font-size:11px; font-weight:900; letter-spacing:1.2px; color:#0f766e; text-transform:uppercase; display:flex; align-items:center; gap:8px;">
+                <span style="background:#0f766e; color:white; width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:11px; flex-shrink:0;">📍</span> LUGARES DE ATENCIÓN
+              </div>
+              
+              <div style="margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+                ${julia.lugares ? julia.lugares.map(l => `
+                  <a href="${l.maps_url}" target="_blank" onclick="event.stopPropagation()" style="display:grid; grid-template-columns:76px 1fr 66px; align-items:center; gap:8px; background:white; border:2px solid #0f766e; border-left:5px solid #0f766e; padding:8px 8px; border-radius:12px; text-decoration:none; box-sizing:border-box; width:100%;">
+                    <span style="${l.tag_style}">${l.tag}</span>
+                    <span style="font-size:12.5px; font-weight:900; color:#0f172a; line-height:1.15; min-width:0; word-break:break-word;">${l.direccion}</span>
+                    <span style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; background:#fefce8; border:1.5px solid #fde68a; padding:5px 2px; border-radius:99px; flex-shrink:0;">
+                      <span style="width:12px; height:12px; background:#EA4335; border-radius:50% 50% 50% 0; transform:rotate(-45deg); display:grid; place-items:center;"><span style="width:5px; height:5px; background:white; border-radius:50%; transform:rotate(45deg); display:block;"></span></span>
+                      <span style="font-size:8px; font-weight:800; color:#92400e; line-height:1; text-align:center; margin-top:2px;">Ver<br>en<br>Maps</span>
+                    </span>
+                  </a>
+                `).join('') : ''}
+              </div>
+            </div>
+
+            <!-- BOTÓN WHATSAPP -->
+            <a href="${julia.whatsapp_url}" class="btn-wsp" onclick="event.stopPropagation()" target="_blank" style="margin-top:14px; background:linear-gradient(135deg,#22c55e,#15803d); box-shadow:0 6px 20px rgba(34,197,94,0.35); display:flex; align-items:center; justify-content:center; gap:8px; color:white; padding:13px 18px; border-radius:999px; text-decoration:none; font-weight:900; font-size:15px; width:100%;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.05 4.94A9.82 9.82 0 0012.03 2C6.48 2 2 6.44 2 11.93c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.37a9.82 9.82 0 004.78 1.22h.01c5.54 0 10.03-4.44 10.03-9.93a9.75 9.75 0 00-3.02-7.98zM12.04 20.17h-.01a8.12 8.12 0 01-4.14-1.13l-.3-.18-3.12.82.83-3.02-.2-.31a8.18 8.18 0 01-1.26-4.42c0-4.54 3.73-8.23 8.32-8.23a8.27 8.27 0 015.87 2.41 8.14 8.14 0 012.43 5.78c0 4.54-3.73 8.28-8.32 8.28zm4.56-6.16c-.25-.12-1.47-.72-1.7-.81-.23-.08-.4-.12-.56.13-.17.25-.65.81-.79.97-.15.17-.29.19-.54.06-.25-.12-1.05-.38-2-1.22-.74-.65-1.23-1.45-1.38-1.7-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.16-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.47-.41-.41-.56-.42h-.48c-.17 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.89 2.38 1.01 2.54c.12.17 1.75 2.66 4.23 3.73.59.25 1.05.4 1.41.51.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29z"/></svg>
+              ${julia.whatsapp_btn_text}
+            </a>
+
+            <div style="text-align:center; font-size:10px; font-weight:600; color:#78716c; margin-top:8px; letter-spacing:0.2px;">
+              ${julia.pie_texto}
+            </div>
+
+          </div>
+
+        </div>
+      `;
+      try { contenedorJulia.appendChild(crearFooterSinIG(julia.id, julia.nombre)); } catch(e) {}
+    }
+
+  } catch (error) {
+    console.error("Error cargando avisos.json:", error);
+  }
+}
+
+cargarAvisosJSON();
+
+// 4. CARGA PROVEEDURÍA KEVIN (ARCHIVO INDIVIDUAL)
+async function cargarAvisoKevin() {
+  try {
+    const response = await fetch('./aviso-kevin.json?v=' + Date.now());
+    if (!response.ok) return;
+    
+    const kevin = await response.json();
+    const contenedorKevin = asegurarContenedor('contenedor-aviso-kevin');
+
+    if (contenedorKevin && kevin) {
+      contenedorKevin.innerHTML = `
+        <div style="grid-column:1/-1;max-width:760px;margin:0 auto 14px auto;">
+          <div style="cursor:pointer;box-sizing:border-box;width:100%;max-width:760px;margin:0 auto;padding:12px;background:#fafafa;border:1px solid #e5e7eb;border-radius:28px;font-family:Inter,Arial,sans-serif;color:#0b132b;box-shadow:0 14px 35px rgba(11,19,43,.12);">
+            
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px;background:linear-gradient(135deg,#7e22ce,#581c87);border-radius:18px;">
+              <div style="font-size:1.4rem;font-weight:900;color:#fff;text-transform:uppercase;">${kevin.nombre}</div>
+              <div style="width:45px;height:45px;border-radius:50%;background:#b8f34a;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🛍️</div>
+            </div>
+
+            <div style="position:relative;margin-top:12px;overflow:hidden;border-radius:22px 22px 14px 14px;background:#e5e7eb;">
+              <img src="${kevin.imagen_fachada}" alt="Fachada Proveeduría Kevin" style="display:block;width:100%;height:clamp(230px,42vw,360px);object-fit:cover;">
+              <div style="position:absolute;left:16px;bottom:15px;padding:8px 12px;border-radius:10px;background:rgba(11,19,43,.88);color:#fff;font-size:.7rem;font-weight:900;text-transform:uppercase;">FOTO REAL DEL LOCAL</div>
+              <div style="position:absolute;right:15px;top:15px;padding:9px 13px;border-radius:999px;background:#b8f34a;color:#0b132b;font-size:.68rem;font-weight:900;transform:rotate(3deg);">${kevin.badge_top}</div>
+            </div>
+
+            <div style="margin-top:12px;padding:10px;border-radius:12px;background:white;border-top:2px dotted #e2e8f0;border-bottom:2px dotted #e2e8f0;text-align:center;">
+              <span style="color:#dc2626;font-weight:900;font-style:italic;">${kevin.slogan_rojo}</span>
+              <span style="background:#dc2626;color:white;font-weight:900;font-size:10px;padding:5px 10px;border-radius:20px;margin-left:6px;">PRECIOS DESTACADOS 🏷</span>
+            </div>
+
+            <div style="padding:18px 8px 8px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+                
+                <div style="background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 3px 10px rgba(11,19,43,.06);overflow:hidden;">
+                  <div style="background:${kevin.sucursales[0].header_bg};padding:8px 12px;font-weight:900;font-size:11px;">🟢 ${kevin.sucursales[0].titulo}</div>
+                  <div style="padding:12px;font-size:12.5px;font-weight:700;">📍 ${kevin.sucursales[0].direccion}</div>
+                </div>
+
+                <div style="background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 3px 10px rgba(11,19,43,.06);overflow:hidden;">
+                  <div style="background:${kevin.sucursales[1].header_bg};padding:8px 12px;font-weight:900;font-size:11px;">🟠 ${kevin.sucursales[1].titulo}</div>
+                  <div style="padding:12px;font-size:12px;font-weight:700;">📍 ${kevin.sucursales[1].direccion}</div>
+                </div>
+
+              </div>
+
+              <a href="${kevin.instagram_url}" target="_blank" style="display:block;margin-bottom:14px;padding:11px;border-radius:12px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:white;font-weight:900;text-align:center;text-decoration:none;">${kevin.instagram_user}</a>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px;">
+                <a href="${kevin.sucursales[0].maps_url}" target="_blank" style="padding:12px;border-radius:999px;background:#eef0f2;text-align:center;font-weight:900;text-decoration:none;color:#263244;">${kevin.sucursales[0].maps_text}</a>
+                <a href="${kevin.sucursales[1].maps_url}" target="_blank" style="padding:12px;border-radius:999px;background:#eef0f2;text-align:center;font-weight:900;text-decoration:none;color:#263244;">${kevin.sucursales[1].maps_text}</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+      try { contenedorKevin.appendChild(crearFooterSinIG(kevin.id, kevin.nombre)); } catch(e) {}
+    }
+  } catch (error) {
+    console.error("Error cargando aviso de Kevin:", error);
+  }
+}
+
+cargarAvisoKevin();
+
+// ==========================================
+// 5. CARGA KIOSCO LOS MELLI (DISEÑO PREMIUM MODERNIZADO)
+// ==========================================
+async function cargarAvisoLosMelli() {
+  try {
+    const response = await fetch('./aviso-los-mellis.json?v=' + Date.now());
+    if (!response.ok) return;
+    
+    const melli = await response.json();
+    const contenedor = asegurarContenedor('contenedor-aviso-los-mellis');
+
+    if (contenedor && melli) {
+      let serviciosHTML = '';
+      if (melli.servicios && melli.servicios.length > 0) {
+        serviciosHTML = `
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 20px 0;">
+            ${melli.servicios.map(s => `
+              <div style="background:${s.bg};border:1.5px solid${s.border};padding:12px;border-radius:16px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+                <span style="font-size:22px;background:white;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.06);flex-shrink:0;">${s.icono}</span>
+                <div style="min-width:0;">
+                  <div style="font-size:13px;font-weight:900;color:${s.txt};line-height:1.1;">${s.titulo}</div>
+                  <div style="font-size:10.5px;font-weight:700;color:#64748b;margin-top:2px;">${s.desc}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      contenedor.innerHTML = `
+        <div id="card-melli" data-search="${melli.search_tags}" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 16px 45px rgba(15,23,42,0.12);border:1.5px solid #e2e8f0;font-family:'Inter',system-ui,sans-serif;position:relative;">
+          
+          <div style="background:linear-gradient(135deg,#090d16 0%, #1e293b 100%);padding:20px 22px;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%);pointer-events:none;"></div>
+            
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#ffb703;font-size:10.5px;font-weight:900;letter-spacing:0.05em;padding:5px 12px;border-radius:999px;margin-bottom:12px;">
+              ${melli.badge_top}
+            </div>
+
+            <div style="display:flex;align-items:center;gap:16px;position:relative;z-index:1;">
+              <div style="width:64px;height:64px;min-width:64px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:18px;box-shadow:0 8px 20px rgba(245,158,11,0.35);display:flex;align-items:center;justify-content:center;color:white;font-size:28px;">
+                🏪
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:900;font-size:clamp(22px,4vw,28px);color:#ffffff;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;text-shadow:0 2px 4px rgba(0,0,0,0.3);">${melli.nombre}</div>
+                <div style="font-size:13px;font-weight:700;color:#94a3b8;margin-top:6px;display:flex;align-items:center;gap:6px;">
+                  <span style="color:#f1f5f9;">📍 ${melli.direccion}</span>
+                  <span style="color:#64748b;">•</span>
+                  <span style="color:#cbd5e1;">${melli.barrio}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+              <span style="font-size:16px;">💡</span>
+              <span style="font-size:12.5px;font-weight:700;color:#e2e8f0;letter-spacing:-0.01em;">${melli.slogan}</span>
+            </div>
+          </div>
+
+          <div style="padding:18px 22px 22px 22px;background:#ffffff;">
+            ${serviciosHTML}
+
+            <a href="${melli.maps_url}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:15px 20px;border-radius:16px;background:linear-gradient(135deg,#2563eb 0%, #1d4ed8 100%);color:#fff;font-weight:900;font-size:14px;text-decoration:none;box-shadow:0 8px 25px rgba(37,99,235,0.35);box-sizing:border-box;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EA4335" stroke="white" stroke-width="1.5"/>
+                <circle cx="12" cy="9" r="2.5" fill="white"/>
+              </svg>
+              <span>${melli.maps_btn_text}</span>
+            </a>
+          </div>
+        </div>
+      `;
+      try{ contenedor.appendChild(crearFooterSinIG(melli.id, melli.nombre)); }catch(e){}
+    }
+  } catch (error) {
+    console.error("Error cargando aviso de Los Melli:", error);
+  }
+}
+
+cargarAvisoLosMelli();
+
+// ==========================================
+// 6. CARGA LAVANDERÍA DE NANNIN
+// ==========================================
+async function cargarAvisoLavanderia() {
+  try {
+    const response = await fetch('./aviso-lavanderia.json?v=' + Date.now());
+    if (!response.ok) return;
+    
+    const nannin = await response.json();
+    const contenedor = document.getElementById('contenedor-aviso-lavanderia') || asegurarContenedor('contenedor-aviso-lavanderia');
+
+    if (contenedor && nannin) {
+      contenedor.innerHTML = `
+        <div class="nannin-card" id="${nannin.id}" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 14px 35px rgba(11,19,43,.12);border:1px solid #e5e7eb;font-family:Inter,Arial,sans-serif;color:#0b132b;cursor:pointer;" title="Tocá para ver más grande">
+          
+          <div class="nannin-hero" style="position:relative;overflow:hidden;background:#e5e7eb;">
+            <img src="${nannin.imagen_fachada}" id="heroImg" alt="${nannin.nombre} - ${nannin.slogan}" loading="lazy" width="800" height="800" style="display:block;width:100%;height:auto;">
+            <div class="nannin-badge" style="position:absolute;top:15px;right:15px;background:#1e1b4b;color:#fff;font-size:11px;font-weight:900;padding:6px 12px;border-radius:999px;display:flex;align-items:center;gap:6px;">
+              <span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;"></span> ${nannin.badge_top}
+            </div>
+          </div>
+
+          <div class="nannin-body" style="padding:20px;">
+            <h1 class="nannin-title" style="margin:0 0 6px 0;font-size:24px;font-weight:900;color:#0b132b;line-height:1.1;">${nannin.nombre.replace('DE NANNIN', '<br>DE NANNIN')}</h1>
+            <div class="nannin-subtitle" style="font-size:12px;font-weight:800;color:#64748b;letter-spacing:0.5px;margin-bottom:14px;">${nannin.slogan}</div>
+
+            <div class="nannin-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+              <div style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:900;padding:6px 10px;border-radius:10px;">LAVADO • SECADO • PLANCHADO</div>
+              <div style="background:#f3e8ff;color:#6b21a8;font-size:11px;font-weight:900;padding:6px 10px;border-radius:10px;">ROPA • ACOLCHADOS • FRAZADAS • TOALLAS</div>
+            </div>
+
+            <div class="badges" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;padding:10px;border-radius:12px;font-size:12px;font-weight:900;display:flex;align-items:center;gap:8px;">
+                <span style="width:22px;height:22px;background:#1E1B4B;color:#FFC700;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">$</span> CALIDAD A BUEN PRECIO
+              </div>
+              <div style="background:#f0fdf4;border:1px solid #dcfce7;padding:10px;border-radius:12px;font-size:12px;font-weight:900;color:#166534;display:flex;align-items:center;gap:8px;">
+                🚚 RETIRO + ENTREGA GRATIS
+              </div>
+            </div>
+
+            <div class="nannin-promo" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border:2px dashed #e879f9;border-radius:16px;padding:14px;text-align:center;margin-bottom:16px;">
+              <h3 style="margin:0 0 10px 0;font-size:13px;font-weight:900;color:#701a75;line-height:1.3;">${nannin.promo_titulo}<br><span style="color:#a21caf;font-size:14px;">${nannin.promo_sub}</span></h3>
+              
+              <div class="grid6" style="display:grid;grid-template-columns:repeat(6, 1fr);gap:6px;">
+                <div style="background:white;padding:8px 4px;border-radius:10px;border:1px solid #f0abfc;font-size:11px;font-weight:800;color:#86198f;"><b>1ª</b><br><small style="font-size:8px;">VISITA</small><div style="color:#ec4899;margin-top:2px;">♥</div></div>
+                <div style="background:white;padding:8px 4px;border-radius:10px;border:1px solid #f0abfc;font-size:11px;font-weight:800;color:#86198f;"><b>2ª</b><br><small style="font-size:8px;">VISITA</small><div style="color:#ec4899;margin-top:2px;">♥</div></div>
+                <div style="background:white;padding:8px 4px;border-radius:10px;border:1px solid #f0abfc;font-size:11px;font-weight:800;color:#86198f;"><b>3ª</b><br><small style="font-size:8px;">VISITA</small><div style="color:#ec4899;margin-top:2px;">♥</div></div>
+                <div style="background:white;padding:8px 4px;border-radius:10px;border:1px solid #f0abfc;font-size:11px;font-weight:800;color:#86198f;"><b>4ª</b><br><small style="font-size:8px;">VISITA</small><div style="color:#ec4899;margin-top:2px;">♥</div></div>
+                <div style="background:white;padding:8px 4px;border-radius:10px;border:1px solid #f0abfc;font-size:11px;font-weight:800;color:#86198f;"><b>5ª</b><br><small style="font-size:8px;">VISITA</small><div style="color:#ec4899;margin-top:2px;">♥</div></div>
+                <div style="background:#f0abfc;color:white;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:900;"><b>6ª</b><br><small style="font-size:8px;color:#fae8ff;">GRATIS</small><div style="margin-top:2px;">🎉</div></div>
+              </div>
+            </div>
+
+            <div class="buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <a class="btn btn-wa" href="${nannin.whatsapp_url}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:white;padding:12px;border-radius:14px;font-weight:900;font-size:13px;text-decoration:none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.05 4.94A9.82 9.82 0 0012.04 2C6.58 2 2.15 6.44 2.15 11.9c0 1.75.46 3.45 1.33 4.96L2 22l5.26-1.38a9.84 9.84 0 004.78 1.22h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.13-2.9-7zM12.05 20.3h-.01a8.19 8.19 0 01-4.18-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 01-1.27-4.54c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.7 8.24-8.24 8.24zm4.52-6.15c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13s-.64.81-.79.97-.29.19-.54.06c-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.1-.51.11-.11.25-.29.37-.43.12-.15.16-.25.24-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.07s.89 2.4 1.01 2.57c.12.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.23-.17-.48-.29z"/></svg>
+                WhatsApp
+              </a>
+
+              <a class="btn btn-ig" href="${nannin.instagram_url}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:white;padding:12px;border-radius:14px;font-weight:900;font-size:13px;text-decoration:none;">
+                📸 ${nannin.instagram_user}
+              </a>
+
+              <a class="btn btn-fb" href="${nannin.facebook_url}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#1877f2;color:white;padding:12px;border-radius:14px;font-weight:900;font-size:13px;text-decoration:none;grid-column:1/-1;">
+                f ${nannin.facebook_text}
+              </a>
+
+              <a class="btn btn-map" href="${nannin.maps_url}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#0f172a;color:white;padding:12px;border-radius:14px;font-weight:900;font-size:13px;text-decoration:none;grid-column:1/-1;">
+                📍 ${nannin.maps_text}
+              </a>
+            </div>
+
+            <div class="footer" style="text-align:center;font-size:11px;color:#64748b;font-weight:700;margin-top:16px;line-height:1.4;">
+              ${nannin.pie_texto}
+            </div>
+          </div>
+        </div>
+      `;
+      try { contenedor.appendChild(crearFooterSinIG(nannin.id, nannin.nombre)); } catch(e) {}
+    }
+  } catch (error) {
+    console.error("Error cargando aviso de Lavandería de Nannin:", error);
+  }
+}
+
+cargarAvisoLavanderia();
