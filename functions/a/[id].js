@@ -44,7 +44,7 @@ export async function onRequest({ params, request, env }) {
   <a href="${esc(destino)}">Ver aviso en INFO MDQ SUR HOY</a>
 </body>
 </html>`, {
-      headers: { 'content-type': 'text/html; charset=utf-8' }
+headers: { 'content-type': 'text/html; charset=utf-8' }
     });
 
   } catch (err) {
