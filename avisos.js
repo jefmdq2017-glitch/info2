@@ -75,7 +75,7 @@ function crearFooterSinIG(id, nombre){
   return cont;
 }
 
-async function cargarAvisosJSON() {
+async function cargarAvisoFarmacia() {
   try {
     // ----------------------------------------------------
     // 1. CARGA DE FARMACIA VARA
@@ -174,7 +174,8 @@ async function cargarAvisosJSON() {
         try { contenedorFarmacia.appendChild(crearFooterSinIG(farmacia.id, farmacia.nombre)); } catch(e) {}
       }
     }
-
+async function cargarAvisoAmapolas() {
+  try {
     // ----------------------------------------------------
     // 2. CARGA DE AMAPOLA'S DIETÉTICA
     // ----------------------------------------------------
@@ -239,7 +240,8 @@ async function cargarAvisosJSON() {
         try{ contenedorAmapolas.appendChild(crearFooterSinIG(amapolas.id, amapolas.nombre)); }catch(e){}
       }
     }
-
+async function cargarAvisoJulia() {
+  try {
     // ----------------------------------------------------
     // 3. CARGA DE FONOAUDIOLOGÍA (JULIA ELENA MOSCOLONI)
     // ----------------------------------------------------
