@@ -3,14 +3,13 @@ const slug = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,''
 const g = (a, ...ks) => { for (const k of ks) if (a[k] != null && a[k] !== '') return a[k]; return ''; };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-// Mapeo exacto entre el slug de la URL y el nombre real del archivo JSON en tu carpeta
 const mapaArchivos = {
     'farmacia-vara': 'farmacia-vara.json',
     'amapola': 'amapolas-dietetica.json',
     'julia': 'julia-moscoloni.json',
     'kevin': 'aviso-kevin.json',
     'los-mellis': 'aviso-los-mellis.json',
-    'nannin': 'nannin.json' // Ajustá el nombre si el de nannin se llama distinto en tu carpeta
+    'nannin': 'nannin.json'
 };
 
 export async function onRequest({ params, request, env }) {
@@ -20,19 +19,19 @@ export async function onRequest({ params, request, env }) {
 
   const archivoJson = mapaArchivos[k];
   if (!archivoJson) {
-    return Response.redirect(u.origin + '/', 302);
+    return env.ASSETS.fetch(request);
   }
 
   try {
     const r = await env.ASSETS.fetch(new Request(u.origin + '/' + archivoJson));
-    if (!r.ok) return Response.redirect(u.origin + '/', 302);
+    if (!r.ok) return env.ASSETS.fetch(request);
     const a = await r.json();
 
     const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
     const desc = g(a, 'descripcion', 'description', 'texto', 'detalle');
     let img = String(g(a, 'imagen', 'image', 'foto', 'img') || 'banner1.jpg');
     if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
-    const destino = u.origin + '/?aviso=' + encodeURIComponent(k);
+    const destino = u.origin + '/#' + k;
 
     return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8">
 <title>${esc(titulo)}</title>
@@ -47,6 +46,6 @@ export async function onRequest({ params, request, env }) {
 <a href="${esc(destino)}">Ver aviso</a></body></html>`,
     { headers: { 'content-type': 'text/html; charset=utf-8' } });
   } catch (e) {
-    return Response.redirect(u.origin + '/', 302);
+    return env.ASSETS.fetch(request);
   }
 }
