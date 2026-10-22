@@ -60,6 +60,7 @@ async function darAmorReal(id, btn){
     btn.style.transform='scale(1)';
   }
 }
+window.darAmorReal = darAmorReal;
 function crearFooterSinIG(id, nombre){
   const cont = document.createElement('div');
   cont.className='footer-amor-auto';
