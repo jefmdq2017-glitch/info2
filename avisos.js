@@ -25,13 +25,15 @@ function asegurarContenedorPadreAvisos(){
   return p;
 }
 
+const slug = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+
 // FOOTER DALE AMOR SIN INSTAGRAM - DEFINITIVO
 function compartirFacebookReal(id){
-  const url = encodeURIComponent(location.origin + '/a/' + id);
+  const url = encodeURIComponent(location.origin + '/a/' + slug(id));
   window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, '_blank', 'width=600,height=400');
 }
 function compartirWhatsAppReal(id, nombre){
-  const url = location.origin + '/a/' + id;
+  const url = location.origin + '/a/' + slug(id);
   const texto = encodeURIComponent('Mirá ' + nombre + ' en INFO MDQ HOY:\n' + url);
   window.open('https://wa.me/?text=' + texto, '_blank');
 }
