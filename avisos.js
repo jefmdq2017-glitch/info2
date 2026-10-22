@@ -329,3 +329,23 @@ async function cargarAvisoLavanderia() {
   }
 }
 cargarAvisoLavanderia();
+// AUTO-SCROLL PARA LINKS TIPO #kiosco-los-melli
+function irAlAvisoPorHash() {
+  const slug = location.hash.replace('#','').trim();
+  if (!slug) return;
+
+  // intenta 10 veces, porque los avisos cargan async
+  let intentos = 0;
+  const timer = setInterval(() => {
+    intentos++;
+    const el = document.getElementById(slug) || document.getElementById('contenedor-aviso-' + slug);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      clearInterval(timer);
+    }
+    if (intentos > 20) clearInterval(timer);
+  }, 300);
+}
+
+window.addEventListener('load', irAlAvisoPorHash);
+window.addEventListener('hashchange', irAlAvisoPorHash);
