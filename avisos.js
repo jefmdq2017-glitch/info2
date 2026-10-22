@@ -1,20 +1,49 @@
-// ==========================================
-// INFO MDQ HOY - AVISOS.JS - VERSIÓN CORREGIDA Y ESTABLE
-// ==========================================
+function asegurarContenedor(id){
+  let c = document.getElementById(id);
+  if(c) return c;
+  c = document.createElement('div');
+  c.id = id;
+  c.style.cssText='max-width:760px;margin:0 auto 20px auto;padding:0 20px;';
+  const ref = document.getElementById('features-wrapper');
+  if(ref && ref.parentNode) ref.parentNode.insertBefore(c, ref.nextSibling);
+  else document.body.appendChild(c);
+  return c;
+}
 
-// --- 1. HELPERS DE CONTENEDORES (NECESARIOS PARA QUE NO DESAPAREZCAN LOS AVISOS) ---
+function asegurarContenedorPadreAvisos(){
+  let p = document.getElementById('contenedor-avisos') || document.getElementById('contenedor-aviso-farmacia') || document.getElementById('contenedor-todos-los-avisos');
+  if(p) return p;
+  p = document.createElement('div');
+  p.id='contenedor-todos-los-avisos';
+  p.style.cssText='max-width:760px;margin:0 auto;padding:0 20px;';
+  const ref = document.getElementById('features-wrapper');
+  if(ref && ref.parentNode) ref.parentNode.insertBefore(p, ref.nextSibling);
+  else document.body.appendChild(p);
+  return p;
+}
+
+const slug = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+
+function compartirFacebookReal(id){
+  const url = encodeURIComponent(location.origin + '/a/' + slug(id));
+  window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, '_blank', 'width=600,height=400');
+}
+
+function compartirWhatsAppReal(id, nombre){
+  const url = location.origin + '/a/' + slug(id);
+  const texto = encodeURIComponent('Mirá ' + nombre + ' en INFO MDQ HOY:\n' + url);
+  window.open('https://wa.me/?text=' + texto, '_blank');
+}
+
 async function darAmorReal(id, btn){
   const storageKey = 'liked_'+id;
   const span = btn.querySelector('.corazon-num');
   const countActual = parseInt(span?.textContent || '0', 10);
-
-  // Si ya figura como votado pero el contador muestra 0, es un voto fantasma del bug anterior -> lo dejamos votar de nuevo
   const yaVotado = localStorage.getItem(storageKey);
   if(yaVotado && countActual > 0){
     btn.animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}], {duration:200});
     return;
   }
-
   btn.disabled = true;
   btn.style.transform='scale(1.15)';
   try{
@@ -24,18 +53,19 @@ async function darAmorReal(id, btn){
       body: JSON.stringify({id}),
       cache: 'no-store'
     });
+    if(!res.ok) throw new Error('fail');
     const totalReal = (await res.text()).trim();
     localStorage.setItem(storageKey,'1');
     if(span) span.textContent = totalReal;
     btn.style.background='#fecaca';
   }catch(e){
     console.error("Error guardando amor:", e);
-    alert('No se pudo conectar con el servidor de corazones, revisá el Worker');
   } finally {
     btn.style.transform='scale(1)';
     btn.disabled = false;
   }
 }
+window.darAmorReal = darAmorReal;
 
 function crearFooterSinIG(id, nombre){
   const cont = document.createElement('div');
@@ -55,9 +85,15 @@ function crearFooterSinIG(id, nombre){
     .then(count => {
       const span = cont.querySelector('.corazon-num');
       if(span) span.textContent = (count || '0').trim();
+    })
+    .catch(() => {
+      const span = cont.querySelector('.corazon-num');
+      const s = cont.querySelector('.corazon-num');
+      if(s) s.textContent = '0';
     });
   return cont;
 }
+
 
 // ==========================================
 // 1. CARGA DE FARMACIA VARA
