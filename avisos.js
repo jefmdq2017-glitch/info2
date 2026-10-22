@@ -3,73 +3,39 @@
 // ==========================================
 
 // --- 1. HELPERS DE CONTENEDORES (NECESARIOS PARA QUE NO DESAPAREZCAN LOS AVISOS) ---
-function asegurarContenedor(id){
-  let c = document.getElementById(id);
-  if(c) return c;
-  c = document.createElement('div');
-  c.id = id;
-  c.style.cssText='max-width:760px;margin:0 auto 20px auto;padding:0 20px;';
-  const ref = document.getElementById('features-wrapper');
-  if(ref && ref.parentNode) ref.parentNode.insertBefore(c, ref.nextSibling);
-  else document.body.appendChild(c);
-  return c;
-}
-
-function asegurarContenedorPadreAvisos(){
-  let p = document.getElementById('contenedor-avisos') || document.getElementById('contenedor-aviso-farmacia') || document.getElementById('contenedor-todos-los-avisos');
-  if(p) return p;
-  p = document.createElement('div');
-  p.id='contenedor-todos-los-avisos';
-  p.style.cssText='max-width:760px;margin:0 auto;padding:0 20px;';
-  const ref = document.getElementById('features-wrapper');
-  if(ref && ref.parentNode) ref.parentNode.insertBefore(p, ref.nextSibling);
-  else document.body.appendChild(p);
-  return p;
-}
-
-const slug = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
-
-// --- 2. COMPARTIR ---
-function compartirFacebookReal(id){
-  const url = encodeURIComponent(location.origin + '/a/' + slug(id));
-  window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, '_blank', 'width=600,height=400');
-}
-
-function compartirWhatsAppReal(id, nombre){
-  const url = location.origin + '/a/' + slug(id);
-  const texto = encodeURIComponent('Mirá ' + nombre + ' en INFO MDQ HOY:\n' + url);
-  window.open('https://wa.me/?text=' + texto, '_blank');
-}
-
-// --- 3. DALE AMOR - CONTEO GLOBAL EN CLOUDFLARE KV ---
 async function darAmorReal(id, btn){
   const storageKey = 'liked_'+id;
-  if(localStorage.getItem(storageKey)){
+  const span = btn.querySelector('.corazon-num');
+  const countActual = parseInt(span?.textContent || '0', 10);
+
+  // Si ya figura como votado pero el contador muestra 0, es un voto fantasma del bug anterior -> lo dejamos votar de nuevo
+  const yaVotado = localStorage.getItem(storageKey);
+  if(yaVotado && countActual > 0){
     btn.animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}], {duration:200});
     return;
   }
+
   btn.disabled = true;
   btn.style.transform='scale(1.15)';
   try{
-    const res = await fetch('/api/likes', {
+    const res = await fetch('/api/likes?v=' + Date.now(), {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({id})
+      body: JSON.stringify({id}),
+      cache: 'no-store'
     });
-    if(!res.ok) throw new Error('fail');
     const totalReal = (await res.text()).trim();
     localStorage.setItem(storageKey,'1');
-    const span = btn.querySelector('.corazon-num');
     if(span) span.textContent = totalReal;
     btn.style.background='#fecaca';
   }catch(e){
-    console.error(e);
+    console.error("Error guardando amor:", e);
+    alert('No se pudo conectar con el servidor de corazones, revisá el Worker');
   } finally {
     btn.style.transform='scale(1)';
     btn.disabled = false;
   }
 }
-window.darAmorReal = darAmorReal;
 
 function crearFooterSinIG(id, nombre){
   const cont = document.createElement('div');
@@ -78,21 +44,17 @@ function crearFooterSinIG(id, nombre){
   const yaLiked = localStorage.getItem('liked_'+id);
   cont.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px 14px;gap:10px;">'
     +'<button type="button" onclick="event.stopPropagation(); darAmorReal(\''+id+'\', this)" data-like-id="'+id+'" style="display:flex;align-items:center;gap:8px;background:'+(yaLiked ? '#fecaca' : '#fff0f0')+';border:2px solid #fecaca;border-radius:999px;padding:10px 18px;font-weight:900;font-size:16px;cursor:pointer;">'
-    +'<span style="font-size:18px">❤</span><span class="corazon-num" style="font-size:16px;color:#be123c">...</span></button>'
+    +'<span style="font-size:18px">❤</span><span class="corazon-num" style="font-size:16px;color:#be123c">0</span></button>'
     +'<div style="flex:1;text-align:left;padding-left:6px;"><div style="font-weight:900;font-size:13px;color:#0f172a;line-height:1.15;">Dale amor a tu comercio favorito y compartilo</div>'
     +'<div style="font-weight:600;font-size:11px;color:#64748b;margin-top:2px;">'+nombre+' es del barrio</div></div></div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 12px 12px;background:#fff5f5;">'
     +'<button type="button" onclick="event.stopPropagation(); compartirFacebookReal(\''+id+'\')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#1877f2;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">f Facebook</button>'
     +'<button type="button" onclick="event.stopPropagation(); compartirWhatsAppReal(\''+id+'\',\''+nombre.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">💬 WhatsApp</button></div>';
-  fetch('/api/likes?id=' + encodeURIComponent(id))
+  fetch('/api/likes?id=' + encodeURIComponent(id) + '&v=' + Date.now(), {cache:'no-store'})
     .then(res => res.text())
     .then(count => {
       const span = cont.querySelector('.corazon-num');
       if(span) span.textContent = (count || '0').trim();
-    })
-    .catch(() => {
-      const span = cont.querySelector('.corazon-num');
-      if(span) span.textContent = '0';
     });
   return cont;
 }
