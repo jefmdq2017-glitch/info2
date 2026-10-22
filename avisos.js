@@ -32,11 +32,13 @@ function compartirFacebookReal(id){
   const url = encodeURIComponent(location.origin + '/a/' + slug(id));
   window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, '_blank', 'width=600,height=400');
 }
+
 function compartirWhatsAppReal(id, nombre){
   const url = location.origin + '/a/' + slug(id);
   const texto = encodeURIComponent('Mirá ' + nombre + ' en INFO MDQ HOY:\n' + url);
   window.open('https://wa.me/?text=' + texto, '_blank');
 }
+
 async function darAmorReal(id, btn){
   if(localStorage.getItem('liked_'+id)){
     btn.style.transform='scale(1.2)';
@@ -61,25 +63,35 @@ async function darAmorReal(id, btn){
   }
 }
 window.darAmorReal = darAmorReal;
+
 function crearFooterSinIG(id, nombre){
   const cont = document.createElement('div');
   cont.className='footer-amor-auto';
   cont.style.cssText="margin:12px 0 22px 0;background:#ffffff;border:2px solid #ffe4e6;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,0.08);overflow:hidden";
+  
   cont.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px 14px;gap:10px;">'
-    +'<button onclick="event.stopPropagation(); darAmorReal(\''+id+'\', this)" data-like-id="'+id+'" style="display:flex;align-items:center;gap:8px;background:#fff0f0;border:2px solid #fecaca;border-radius:999px;padding:10px 18px;font-weight:900;font-size:16px;cursor:pointer;">'
-    +'<span style="font-size:18px">❤️</span><span class="corazon-num" style="font-size:16px;color:#be123c">0</span></button>'
+    +'<button type="button" onclick="event.stopPropagation(); darAmorReal(\''+id+'\', this)" data-like-id="'+id+'" style="display:flex;align-items:center;gap:8px;background:#fff0f0;border:2px solid #fecaca;border-radius:999px;padding:10px 18px;font-weight:900;font-size:16px;cursor:pointer;">'
+    +'<span style="font-size:18px">❤️</span><span class="corazon-num" style="font-size:16px;color:#be123c">...</span></button>'
     +'<div style="flex:1;text-align:left;padding-left:6px;"><div style="font-weight:900;font-size:13px;color:#0f172a;line-height:1.15;">Dale amor a tu comercio favorito y compartilo</div>'
     +'<div style="font-weight:600;font-size:11px;color:#64748b;margin-top:2px;">'+nombre+' es del barrio</div></div></div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 12px 12px;background:#fff5f5;">'
-    +'<button onclick="event.stopPropagation(); compartirFacebookReal(\''+id+'\')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#1877f2;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">f Facebook</button>'
-    +'<button onclick="event.stopPropagation(); compartirWhatsAppReal(\''+id+'\',\''+nombre.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">💬 WhatsApp</button></div>';
-  setTimeout(()=>{
-    const c=localStorage.getItem('likes_'+id);
-    if(c){ const s=cont.querySelector('.corazon-num'); if(s) s.textContent=c; }
-  },0);
+    +'<button type="button" onclick="event.stopPropagation(); compartirFacebookReal(\''+id+'\')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#1877f2;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">f Facebook</button>'
+    +'<button type="button" onclick="event.stopPropagation(); compartirWhatsAppReal(\''+id+'\',\''+nombre.replace(/'/g,"\\'")+'\')" style="display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:12px;padding:11px 6px;font-weight:800;font-size:13px;cursor:pointer;">💬 WhatsApp</button></div>';
+
+  // Consulta al servidor el valor real en Cloudflare KV al cargar la tarjeta
+  fetch('/api/likes?id=' + encodeURIComponent(id))
+    .then(res => res.text())
+    .then(count => {
+      const span = cont.querySelector('.corazon-num');
+      if(span) span.textContent = count;
+    })
+    .catch(() => {
+      const span = cont.querySelector('.corazon-num');
+      if(span) span.textContent = '0';
+    });
+
   return cont;
 }
-
 // ==========================================
 // 1. CARGA DE FARMACIA VARA
 // ==========================================
