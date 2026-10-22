@@ -37,20 +37,28 @@ function compartirWhatsAppReal(id, nombre){
   const texto = encodeURIComponent('Mirá ' + nombre + ' en INFO MDQ HOY:\n' + url);
   window.open('https://wa.me/?text=' + texto, '_blank');
 }
-function darAmorReal(id, btn){
+async function darAmorReal(id, btn){
   if(localStorage.getItem('liked_'+id)){
     btn.style.transform='scale(1.2)';
     setTimeout(()=>btn.style.transform='scale(1)',200);
     return;
   }
-  let c=(parseInt(localStorage.getItem('likes_'+id)||'0')||0)+1;
-  localStorage.setItem('likes_'+id, String(c));
-  localStorage.setItem('liked_'+id,'1');
-  const span = btn.querySelector('.corazon-num');
-  if(span) span.textContent=c;
-  btn.style.background='#fecaca';
   btn.style.transform='scale(1.15)';
-  setTimeout(()=>btn.style.transform='scale(1)',200);
+  try{
+    const res = await fetch('/api/likes', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({id, action: 'like'})
+    });
+    const totalReal = await res.text();
+    localStorage.setItem('liked_'+id,'1');
+    const span = btn.querySelector('.corazon-num');
+    if(span) span.textContent = totalReal;
+    btn.style.background='#fecaca';
+    setTimeout(()=>btn.style.transform='scale(1)',200);
+  }catch(e){
+    btn.style.transform='scale(1)';
+  }
 }
 function crearFooterSinIG(id, nombre){
   const cont = document.createElement('div');
