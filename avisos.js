@@ -82,7 +82,7 @@ async function cargarAvisoFarmacia() {
     const contenedorFarmacia = asegurarContenedorPadreAvisos();
 
     if (contenedorFarmacia && farmacia) {
-      contenedorFarmacia.innerHTML = '<div id="'+farmacia.id+'" style="background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); margin-bottom:20px;">'
+        contenedorFarmacia.innerHTML = '<div id="'+slug(farmacia.id)+'" style="background:#ffffff;
         +'<div style="background:#0a0a0a; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-radius:20px; margin:10px 10px 0 10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">'
         +'<div style="color:#ffffff; font-size:22px; font-weight:900; letter-spacing:1px; text-transform:uppercase;">'+farmacia.nombre+'</div>'
         +'<div style="width: 52px; height: 52px; background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #047857 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; position: relative; border: 3px solid #ffffff; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.35);">'
@@ -129,7 +129,7 @@ async function cargarAvisoAmapolas() {
         }).join('');
       }
 
-      contenedorAmapolas.innerHTML = '<div id="'+amapolas.id+'" class="amapola-card" onclick="abrirModalAmapola(this)" style="cursor:pointer; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:14px; margin-bottom:20px;">'
+      contenedorAmapolas.innerHTML = '<div id="'+slug(amapolas.id)+'" class="amapola-card" onclick="abrirModalAmapola(this)" style="cursor:pointer; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:14px; margin-bottom:20px;">'
         +'<div class="amapola-fachada-wrap" style="position:relative; border-radius:16px; overflow:hidden; margin-bottom:12px;">'
         +'<img src="'+amapolas.imagen_fachada+'" alt="'+amapolas.nombre+'" class="amapola-fachada" style="width:100%; height:auto; display:block;">'
         +(amapolas.logo_circle ? '<div class="amapola-logo-circle" style="position:absolute; bottom:10px; left:10px; width:60px; height:60px; background:white; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.2);"><img src="'+amapolas.logo_circle+'" alt="Logo" style="width:90%; height:auto;"></div>' : '')
@@ -184,8 +184,8 @@ async function cargarAvisoJulia() {
         }).join('');
       }
 
-      contenedorJulia.innerHTML = '<div id="'+julia.id+'" class="card-emp destacado" data-barrio="alfar" data-cat="salud" onclick="abrirModalJulia(this)" style="cursor:pointer; display:block; padding:0; overflow:hidden; border:2px solid #fde68a; background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%); border-radius:24px; position:relative; box-shadow:0 12px 32px rgba(15,23,42,0.12); max-width:760px; margin:0 auto 14px auto;">'
-        +'<div style="background:linear-gradient(135deg,#0f766e 0%,#115e59 100%); padding:16px 16px 14px; position:relative; overflow:hidden;">'
+     contenedorJulia.innerHTML = '<div id="'+slug(julia.id)+'" class="card-emp destacado" data-barrio="alfar" data-cat="salud" onclick="abrirModalJulia(this)" style="cursor:pointer; display:block; padding:0; overflow:hidden; border:2px solid #fde68a; background:linear-gradient(180deg,#fffbeb 0%,#fef3c7 100%); border-radius:24px; position:relative; box-shadow:0 12px 32px rgba(15,23,42,0.12); max-width:760px; margin:0 auto 14px auto;">'
+    +'<div style="background:linear-gradient(135deg,#0f766e 0%,#115e59 100%); padding:16px 16px 14px; position:relative; overflow:hidden;">'
         +'<div style="position:absolute; top:-40px; right:-40px; width:120px; height:120px; background:rgba(255,255,255,0.08); border-radius:50%;"></div>'
         +'<div style="position:absolute; bottom:-20px; left:40%; width:80px; height:80px; background:rgba(253,230,138,0.12); border-radius:50%;"></div>'
         +'<div style="display:flex; align-items:center; gap:12px; position:relative; z-index:1;">'
@@ -229,7 +229,7 @@ async function cargarAvisoKevin() {
     const contenedorKevin = asegurarContenedor('contenedor-aviso-kevin');
 
     if (contenedorKevin && kevin) {
-      contenedorKevin.innerHTML = '<div id="'+kevin.id+'" style="grid-column:1/-1;max-width:760px;margin:0 auto 14px auto;">'
+      contenedorKevin.innerHTML = '<div id="'+slug(kevin.id)+'" style="grid-column:1/-1;max-width:760px;margin:0 auto 14px auto;">'
         +'<div style="cursor:pointer;box-sizing:border-box;width:100%;max-width:760px;margin:0 auto;padding:12px;background:#fafafa;border:1px solid #e5e7eb;border-radius:28px;font-family:Inter,Arial,sans-serif;color:#0b132b;box-shadow:0 14px 35px rgba(11,19,43,.12);">'
         +'<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px;background:linear-gradient(135deg,#7e22ce,#581c87);border-radius:18px;">'
         +'<div style="font-size:1.4rem;font-weight:900;color:#fff;text-transform:uppercase;">'+kevin.nombre+'</div>'
@@ -281,7 +281,7 @@ async function cargarAvisoLosMelli() {
           }).join('') + '</div>';
       }
 
-      contenedor.innerHTML = '<div id="'+melli.id+'" data-search="'+melli.search_tags+'" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 16px 45px rgba(15,23,42,0.12);border:1.5px solid #e2e8f0;font-family:\'Inter\',system-ui,sans-serif;position:relative;">'
+      contenedor.innerHTML = '<div id="'+slug(melli.id)+'" data-search="'+melli.search_tags+'" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 16px 45px rgba(15,23,42,0.12);border:1.5px solid #e2e8f0;font-family:\'Inter\',system-ui,sans-serif;position:relative;">'
         +'<div style="background:linear-gradient(135deg,#090d16 0%, #1e293b 100%);padding:20px 22px;position:relative;overflow:hidden;">'
         +'<div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%);pointer-events:none;"></div>'
         +'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#ffb703;font-size:10.5px;font-weight:900;letter-spacing:0.05em;padding:5px 12px;border-radius:999px;margin-bottom:12px;">'+melli.badge_top+'</div>'
@@ -313,7 +313,7 @@ async function cargarAvisoLavanderia() {
     const contenedor = document.getElementById('contenedor-aviso-lavanderia') || asegurarContenedor('contenedor-aviso-lavanderia');
 
     if (contenedor && nannin) {
-      contenedor.innerHTML = '<div class="nannin-card" id="'+nannin.id+'" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 14px 35px rgba(11,19,43,.12);border:1px solid #e5e7eb;font-family:Inter,Arial,sans-serif;color:#0b132b;cursor:pointer;" title="Tocá para ver más grande">'
+      contenedor.innerHTML = '<div class="nannin-card" id="'+slug(nannin.id)+'" style="box-sizing:border-box;width:100%;max-width:760px;margin:0 auto 20px auto;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 14px 35px rgba(11,19,43,.12);border:1px solid #e5e7eb;font-family:Inter,Arial,sans-serif;color:#0b132b;cursor:pointer;" title="Tocá para ver más grande">'
         +'<div class="nannin-hero" style="position:relative;overflow:hidden;background:#e5e7eb;">'
         +'<img src="'+nannin.imagen_fachada+'" id="heroImg" alt="'+nannin.nombre+' - '+nannin.slogan+'" loading="lazy" width="800" height="800" style="display:block;width:100%;height:auto;">'
         +'<div class="nannin-badge" style="position:absolute;top:15px;right:15px;background:#1e1b4b;color:#fff;font-size:11px;font-weight:900;padding:6px 12px;border-radius:999px;display:flex;align-items:center;gap:6px;">'
