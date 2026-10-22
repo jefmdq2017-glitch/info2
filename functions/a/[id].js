@@ -1,71 +1,46 @@
+const slug = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+const g = (a, ...ks) => { for (const k of ks) if (a[k] != null && a[k] !== '') return a[k]; return ''; };
+const aplanar = d => Array.isArray(d)
+  ? d.flatMap(x => (x && typeof x === 'object' && !Array.isArray(x) && ('titulo' in x || 'title' in x || 'id' in x)) ? [x] : aplanar(x))
+  : (d && typeof d === 'object') ? Object.values(d).flatMap(aplanar) : [];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 export async function onRequest({ params, request, env }) {
   const u = new URL(request.url);
-  const rawId = (params.id || '').trim().toLowerCase();
+  const r = await env.ASSETS.fetch(new Request(u.origin + '/avisos.json'));
+  const lista = aplanar(await r.json());
 
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[c]));
-
-  // LISTA REAL DE TUS ARCHIVOS - sacada de tu captura
-  // Si agregás uno nuevo, solo lo agregás acá abajo
-  const ARCHIVOS_COMERCIOS = [
-    'farmacia-vara.json',
-    'amapolas-dietetica.json',
-    'julia-moscoloni.json',
-    'aviso-kevin.json',
-    'aviso-lavanderia.json',
-    'aviso-los-mellis.json',
-    'cortes-edea.json'
-  ];
-
-  let data = null;
-
-  for (const archivo of ARCHIVOS_COMERCIOS) {
-    try {
-      const r = await env.ASSETS.fetch(new Request(`${u.origin}/${archivo}`));
-      if (!r.ok) continue;
-      const j = await r.json();
-      const idDelJson = String(j.id || '').toLowerCase();
-      const nombreArchivoSinJson = archivo.replace('.json','').toLowerCase();
-      
-      // Coincide si: id del json es igual, o el nombre del archivo es igual, o con/sin prefijo aviso-
-      if (
-        idDelJson === rawId ||
-        idDelJson === `aviso-${rawId}` ||
-        rawId === `aviso-${idDelJson}` ||
-        nombreArchivoSinJson === rawId ||
-        nombreArchivoSinJson === `aviso-${rawId}` ||
-        rawId === nombreArchivoSinJson.replace(/^aviso-/, '')
-      ) {
-        data = j;
-        break;
-      }
-    } catch {}
+  // Diagnóstico: abrí /a/_ids para ver qué link le corresponde a cada aviso
+  if (params.id === '_ids') {
+    return new Response(JSON.stringify(lista.map((a, i) => ({
+      n: i + 1, id: a.id, titulo: g(a, 'titulo', 'title', 'nombre'),
+      enlace: '/a/' + slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre'))
+    })), null, 1), { headers: { 'content-type': 'application/json; charset=utf-8' } });
   }
 
-  if (!data) return Response.redirect(u.origin + '/', 302);
+  let clave = params.id; try { clave = decodeURIComponent(clave); } catch {}
+  const k = slug(clave);
+  const a = lista.find(x => [g(x,'id'), g(x,'slug'), g(x,'titulo','title','nombre')]
+    .some(v => v !== '' && slug(v) === k));
+  if (!a) return Response.redirect(u.origin + '/', 302);
 
-  const titulo = data.nombre || data.titulo || rawId;
-  const desc = data.slogan || data.direccion || data.subtitulo || '';
-  let foto = data.imagen_fachada || data.imagen_frente || data.imagen || data.foto || '';
+  const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
+  const desc = g(a, 'descripcion', 'description', 'texto', 'detalle');
+  let img = String(g(a, 'imagen', 'image', 'foto', 'img') || 'banner1.jpg');
+  if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
+  const destino = u.origin + '/?aviso=' + encodeURIComponent(slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')));
 
-  if (!foto) return Response.redirect(u.origin + '/', 302);
-
-  if (!foto.startsWith('http')) {
-    foto = `${u.origin}/${foto.replace(/^\.?\//, '')}`;
-  }
-  foto = encodeURI(foto);
-
-  const destino = `${u.origin}/?aviso=${encodeURIComponent(data.id || rawId)}`;
-
-  return new Response(`<!doctype html>
-<html><head>
-<meta charset="utf-8">
+  return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>${esc(titulo)}</title>
+<meta property="og:type" content="article">
 <meta property="og:title" content="${esc(titulo)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:image" content="${esc(foto)}">
+<meta property="og:image" content="${esc(img)}">
 <meta property="og:url" content="${esc(u.href)}">
-<meta property="og:type" content="article">
-</head><body><script>location.replace(${JSON.stringify(destino)})</script></body></html>`, 
+<meta name="twitter:card" content="summary_large_image">
+<noscript><meta http-equiv="refresh" content="0;url=${esc(destino)}"></noscript>
+</head><body><script>location.replace(${JSON.stringify(destino)})</script>
+<a href="${esc(destino)}">Ver aviso</a></body></html>`,
   { headers: { 'content-type': 'text/html; charset=utf-8' } });
 }
