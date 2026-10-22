@@ -49,7 +49,7 @@ export async function onRequest({ params, request, env }) {
 
     const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
     const desc = (g(a, 'descripcion', 'description', 'texto', 'detalle') || '').slice(0, 200) || titulo;
-    let img = String(g(a, 'imagen', 'image', 'foto', 'img') || 'amapola_logo_transparente.webp');
+    let img = String(g(a, 'imagen', 'image', 'foto', 'img', 'logo', 'imagen_url', 'image_url', 'url', 'src', 'picture') || 'amapola_logo_transparente.webp');
     if (img.includes(',')) img = img.split(',')[0].trim();
     if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
     const destino = u.origin + '/?aviso=' + encodeURIComponent(slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')));
