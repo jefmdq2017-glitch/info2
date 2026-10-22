@@ -1,37 +1,40 @@
 const slug = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
   .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 const g = (a, ...ks) => { for (const k of ks) if (a[k] != null && a[k] !== '') return a[k]; return ''; };
-const aplanar = d => Array.isArray(d)
-  ? d.flatMap(x => (x && typeof x === 'object' && !Array.isArray(x) && ('titulo' in x || 'title' in x || 'id' in x)) ? [x] : aplanar(x))
-  : (d && typeof d === 'object') ? Object.values(d).flatMap(aplanar) : [];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Mapeo exacto entre el slug de la URL y el nombre real del archivo JSON en tu carpeta
+const mapaArchivos = {
+    'farmacia-vara': 'farmacia-vara.json',
+    'amapola': 'amapolas-dietetica.json',
+    'julia': 'julia-moscoloni.json',
+    'kevin': 'aviso-kevin.json',
+    'los-mellis': 'aviso-los-mellis.json',
+    'nannin': 'nannin.json' // Ajustá el nombre si el de nannin se llama distinto en tu carpeta
+};
 
 export async function onRequest({ params, request, env }) {
   const u = new URL(request.url);
-  const r = await env.ASSETS.fetch(new Request(u.origin + '/avisos.json'));
-  const lista = aplanar(await r.json());
-
-  // Diagnóstico: abrí /a/_ids para ver qué link le corresponde a cada aviso
-  if (params.id === '_ids') {
-    return new Response(JSON.stringify(lista.map((a, i) => ({
-      n: i + 1, id: a.id, titulo: g(a, 'titulo', 'title', 'nombre'),
-      enlace: '/a/' + slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre'))
-    })), null, 1), { headers: { 'content-type': 'application/json; charset=utf-8' } });
-  }
-
   let clave = params.id; try { clave = decodeURIComponent(clave); } catch {}
   const k = slug(clave);
-  const a = lista.find(x => [g(x,'id'), g(x,'slug'), g(x,'titulo','title','nombre')]
-    .some(v => v !== '' && slug(v) === k));
-  if (!a) return Response.redirect(u.origin + '/', 302);
 
-  const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
-  const desc = g(a, 'descripcion', 'description', 'texto', 'detalle');
-  let img = String(g(a, 'imagen', 'image', 'foto', 'img') || 'banner1.jpg');
-  if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
-  const destino = u.origin + '/?aviso=' + encodeURIComponent(slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')));
+  const archivoJson = mapaArchivos[k];
+  if (!archivoJson) {
+    return Response.redirect(u.origin + '/', 302);
+  }
 
-  return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8">
+  try {
+    const r = await env.ASSETS.fetch(new Request(u.origin + '/' + archivoJson));
+    if (!r.ok) return Response.redirect(u.origin + '/', 302);
+    const a = await r.json();
+
+    const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
+    const desc = g(a, 'descripcion', 'description', 'texto', 'detalle');
+    let img = String(g(a, 'imagen', 'image', 'foto', 'img') || 'banner1.jpg');
+    if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
+    const destino = u.origin + '/?aviso=' + encodeURIComponent(k);
+
+    return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8">
 <title>${esc(titulo)}</title>
 <meta property="og:type" content="article">
 <meta property="og:title" content="${esc(titulo)}">
@@ -42,5 +45,8 @@ export async function onRequest({ params, request, env }) {
 <noscript><meta http-equiv="refresh" content="0;url=${esc(destino)}"></noscript>
 </head><body><script>location.replace(${JSON.stringify(destino)})</script>
 <a href="${esc(destino)}">Ver aviso</a></body></html>`,
-  { headers: { 'content-type': 'text/html; charset=utf-8' } });
+    { headers: { 'content-type': 'text/html; charset=utf-8' } });
+  } catch (e) {
+    return Response.redirect(u.origin + '/', 302);
+  }
 }
