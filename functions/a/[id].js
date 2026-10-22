@@ -6,55 +6,50 @@ const aplanar = d => Array.isArray(d)
   : (d && typeof d === 'object') ? Object.values(d).flatMap(aplanar) : [];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-export async function onRequest({ params, request, env }) {
-  const u = new URL(request.url);
-  const r = await env.ASSETS.fetch(new Request(u.origin + '/avisos.json'));
-  if (!r.ok) return new Response('No pude leer avisos.json', {status: 500});
-  const lista = aplanar(await r.json());
+export async function onRequest({ params, request }) {
+  try {
+    const u = new URL(request.url);
+    // CAMBIO IMPORTANTE: usamos fetch directo, no env.ASSETS
+    const r = await fetch(u.origin + '/avisos.json', { cf: { cacheTtl: 60 } });
+    if (!r.ok) return new Response('No pude leer /avisos.json: ' + r.status, { status: 500 });
+    const lista = aplanar(await r.json());
 
-  if (params.id === '_ids') {
-    return new Response(JSON.stringify(lista.map((a, i) => ({
-      n: i + 1, id: a.id, titulo: g(a, 'titulo', 'title', 'nombre'),
-      slug_final: slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')),
-      enlace: '/a/' + slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre'))
-    })), null, 2), { headers: { 'content-type': 'application/json; charset=utf-8' } });
-  }
+    if (params.id === '_ids') {
+      return new Response(JSON.stringify(lista.map((a, i) => ({
+        n: i + 1, id: a.id, titulo: g(a, 'titulo', 'title', 'nombre'),
+        slug_final: slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')),
+        enlace: '/a/' + slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre'))
+      })), null, 2), { headers: { 'content-type': 'application/json; charset=utf-8' } });
+    }
 
-  let clave = params.id; try { clave = decodeURIComponent(clave); } catch {}
-  const k = slug(clave);
-  // Busca por ID primero, después por slug/titulo
-  let a = lista.find(x => String(g(x,'id')).trim() === clave.trim());
-  if (!a) a = lista.find(x => [g(x,'id'), g(x,'slug'), g(x,'titulo','title','nombre')].some(v => v !== '' && slug(v) === k));
-  
-  if (!a) {
-    return new Response(`Aviso no encontrado: ${esc(clave)}. Revisa /a/_ids`, {status: 404, headers: {'content-type':'text/plain; charset=utf-8'}});
-  }
+    let clave = params.id; try { clave = decodeURIComponent(clave); } catch {}
+    const k = slug(clave);
+    let a = lista.find(x => String(g(x,'id')).trim() === clave.trim());
+    if (!a) a = lista.find(x => [g(x,'id'), g(x,'slug'), g(x,'titulo','title','nombre')].some(v => v !== '' && slug(v) === k));
+    if (!a) return new Response('Aviso no encontrado: ' + clave + ' - Revisa /a/_ids', { status: 404 });
 
-  const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso en Info MDQ Hoy';
-  const descRaw = g(a, 'descripcion', 'description', 'texto', 'detalle') || `Mirá este aviso de ${titulo} en Info MDQ Hoy - Mar del Plata`;
-  const desc = descRaw.slice(0, 200);
-  let img = String(g(a, 'imagen', 'image', 'foto', 'img', 'imagenes') || 'banner1.jpg');
-  // Si es array de imagenes, toma la primera
-  if (img.includes(',')) img = img.split(',')[0];
-  if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
-  const slugFinal = slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre'));
-  const destino = u.origin + '/?aviso=' + encodeURIComponent(slugFinal);
+    const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
+    const desc = (g(a, 'descripcion', 'description', 'texto', 'detalle') || '').slice(0, 200) || `Mirá ${titulo} en Info MDQ Hoy`;
+    let img = String(g(a, 'imagen', 'image', 'foto', 'img') || 'banner1.jpg');
+    if (img.includes(',')) img = img.split(',')[0].trim();
+    if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
+    const destino = u.origin + '/?aviso=' + encodeURIComponent(slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')));
 
-  return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8">
-<title>${esc(titulo)} - Info MDQ Hoy</title>
+    return new Response(`<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>${esc(titulo)}</title>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Info MDQ Hoy">
 <meta property="og:title" content="${esc(titulo)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${esc(img)}">
-<meta property="og:image:secure_url" content="${esc(img)}">
 <meta property="og:url" content="${esc(u.href)}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(titulo)}">
-<meta name="twitter:description" content="${esc(desc)}">
-<meta name="twitter:image" content="${esc(img)}">
 <noscript><meta http-equiv="refresh" content="0;url=${esc(destino)}"></noscript>
-</head><body><script>location.replace(${JSON.stringify(destino)})</script>
-<p><a href="${esc(destino)}">Ver ${esc(titulo)}</a></p></body></html>`,
-  { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=3600' } });
+</head><body><script>location.replace(${JSON.stringify(destino)})</script></body></html>`,
+    { headers: { 'content-type': 'text/html; charset=utf-8' } });
+
+  } catch (e) {
+    // Esto evita el Error 1101 y te muestra el error real
+    return new Response('Error en el Worker: ' + (e && e.message ? e.message : e) + '\n' + (e && e.stack ? e.stack : ''), { status: 500, headers: {'content-type':'text/plain; charset=utf-8'}});
+  }
 }
