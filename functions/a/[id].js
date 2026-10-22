@@ -49,7 +49,26 @@ export async function onRequest({ params, request, env }) {
 
     const titulo = g(a, 'titulo', 'title', 'nombre') || 'Aviso';
     const desc = (g(a, 'descripcion', 'description', 'texto', 'detalle') || '').slice(0, 200) || titulo;
-    let img = String(g(a, 'imagen_frente', 'imagen', 'image', 'foto', 'img', 'logo', 'url', 'imagen_url') || 'amapola_logo_transparente.webp');
+       // --- BUSCADOR DE FOTO A PRUEBA DE TODO ---
+    function buscarImg(o) {
+      // 1. Busca los nombres conocidos primero
+      let directo = g(o, 'imagen_frente', 'imagen', 'image', 'foto', 'foto_frente', 'img', 'foto_perfil');
+      if (directo) return directo;
+      // 2. Si no, busca cualquier campo que contenga una imagen
+      for (let k in o) {
+        let v = o[k];
+        if (typeof v === 'string' && /\.(webp|jpg|jpeg|png)$/i.test(v) && !v.includes('amapola_logo')) {
+          return v;
+        }
+        if (Array.isArray(v) && v.length > 0 && typeof v[0] === 'string' && /\.(webp|jpg|jpeg|png)/i.test(v[0])) {
+          return v[0];
+        }
+      }
+      return '';
+    }
+    let img = String(buscarImg(a) || 'amapola_logo_transparente.webp');
+    if (img.includes(',')) img = img.split(',')[0].trim();
+    if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
     if (img.includes(',')) img = img.split(',')[0].trim();
     if (!/^https?:\/\//.test(img)) img = u.origin + '/' + img.replace(/^\.?\//, '');
     const destino = u.origin + '/?aviso=' + encodeURIComponent(slug(g(a, 'id', 'slug', 'titulo', 'title', 'nombre')));
